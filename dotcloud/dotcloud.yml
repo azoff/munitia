@@ -1,2 +1,6 @@
-www:
-  type: static
+wow:
+  type: nodejs
+  approot: munitianode
+
+data:
+  type: mongodb
