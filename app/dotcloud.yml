@@ -1,6 +1,6 @@
-wow:
+api:
   type: nodejs
-  approot: munitianode
+  approot: api
 
 data:
   type: mongodb
