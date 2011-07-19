@@ -1,5 +1,0 @@
-api:
-  type: nodejs
-
-data:
-  type: mongodb
