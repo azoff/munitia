@@ -22,11 +22,11 @@ Config.prototype = {
 				        error = jsonError;
 				    }
 				} else {
-					error = 'Configuration file is empty!';
+					error = path + ' is an empty file!';
 				}
 			}
 			if(error) {    
-		        console.error("Unable to load configuration file %s: %s", path, error);
+		        console.error("Unable to load configuration file: %s", error);
 		    }
 		});
 	},
