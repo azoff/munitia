@@ -1,6 +1,5 @@
 api:
   type: nodejs
-  approot: api
 
 data:
   type: mongodb
