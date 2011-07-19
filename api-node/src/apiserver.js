@@ -18,8 +18,8 @@ ApiServer.prototype = {
         }
 	},
 	respond: function(request, response) {
-		response.writeHead(200, {"Content-Type": "text/plain"});
-		response.end("API - OK");
+		response.writeHead(200, {"Content-Type": "text/javascript"});
+		response.end("document.write('API - OK');");
 	}	
 };
 
