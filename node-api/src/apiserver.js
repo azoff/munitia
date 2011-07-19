@@ -6,7 +6,7 @@ utils = require('utils');
 function ApiServer(config) {
 	var onrequest = utils.applier(this, this.respond);
 	this.config = config;
-	this.server = this.createServer(onrequest);
+	this.server = http.createServer(onrequest);
 }
 
 ApiServer.prototype = {
