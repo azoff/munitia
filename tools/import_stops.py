@@ -6,7 +6,7 @@ import sys
 
 def import_stops(filename):
     """Imports transit stops from filename into MongoDB."""
-    connection = pymongo.Connection('mongodb://root:PFdca3bsiNMI0rWMN8Xq@05032e89.dotcloud.com:7509')
+    connection = pymongo.Connection('mongodb://root:lcKkmyqBup1aZrTKSHYX@149f8b26.dotcloud.com:9072')
     db = connection.munitia
     print db
     print db.stops
