@@ -19,7 +19,7 @@ ApiServer.prototype = {
 	},
 	respond: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/plain"});
-		response.end(require('sys').inspect(this.config._conf));
+		response.end("API - OK");
 	}	
 };
 
