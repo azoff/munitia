@@ -21,7 +21,7 @@ ApiServer.prototype = {
 	
 	respond: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/plain"});
-		response.end(JSON.stringify(this.config));
+		response.end(require('sys').inspect(this.config));
 	}
 	
 };
