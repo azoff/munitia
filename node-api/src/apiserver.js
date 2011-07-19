@@ -10,7 +10,6 @@ function ApiServer(config) {
 }
 
 ApiServer.prototype = {
-	
 	listen: function(port) {
 		try {
             this.server.listen(port);
@@ -18,12 +17,10 @@ ApiServer.prototype = {
             console.error('Unable to start API server on port %d: %s', port, error);
         }
 	},
-	
 	respond: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/plain"});
 		response.end(require('sys').inspect(this.config._conf));
-	}
-	
+	}	
 };
 
 exports.start = function(config, port) {

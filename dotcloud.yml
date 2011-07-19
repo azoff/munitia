@@ -1,4 +1,4 @@
-www:
+api:
   type: nodejs
   approot: node-api
 
