@@ -1,6 +1,10 @@
 api:
   type: nodejs
   approot: node-api
+  
+static:
+  type: static
+  approot: nginx-static
 
 data:
   type: mongodb
