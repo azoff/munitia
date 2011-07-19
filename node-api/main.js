@@ -13,6 +13,8 @@ paths.env = '/home/dotcloud/environment.json';
 paths.src = path.join(paths.root, 'src');
 require.paths.unshift(paths.src);
 
+console.log(require.paths);
+
 require('config').load(paths.env, 'utf-8', function(config){
 	require('apiserver').start(config, 8080);
 });
