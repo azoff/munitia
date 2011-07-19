@@ -1,6 +1,6 @@
-api:
+www:
   type: nodejs
-  approot: api
+  approot: node-api
 
 data:
   type: mongodb
