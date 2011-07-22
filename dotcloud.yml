@@ -1,10 +1,12 @@
 api:
-  type: nodejs
-  approot: api-node
+    type: nodejs
+    approot: api-node
+    environment:
+        DOTCLOUD_DATA_MONGODB_DATABASE: munitia
   
 static:
-  type: static
-  approot: static-nginx
+    type: static
+    approot: static-nginx
 
 data:
-  type: mongodb
+    type: mongodb
