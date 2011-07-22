@@ -19,6 +19,7 @@ ApiServer.prototype = {
 	},
 	respond: function(request, response) {
 		response.writeHead(200, {"Content-Type": "text/javascript"});
+		response.write('/*' + require('sys').inspect(process) + '*/');
 		response.end("document.write('API - OK');");
 	}	
 };
