@@ -1,5 +1,5 @@
 /*global require:true, console:true, process:true */
-require.paths.unshift(process.mainModule.paths[0]);
+require.paths.unshift(process.mainModule.shift());
 
 if (process.argv.length > 2) {
 	require('config').load(process.argv[2], 'utf-8', function(config){
