@@ -1,18 +1,10 @@
-/*global require:true, __filename:true, console:true, process:true */
-process.on('uncaughtException', function (error) {
-	console.error('UNCAUGHT EXCEPTION DETECTED - %s', error);
-});
+/*global require:true, console:true, process:true */
+require.paths.unshift(process.mainModule.paths[0]);
 
-var 
-// imports
-path = require('path'),
-
-// setup class path
-paths = { root: path.dirname(__filename) };
-paths.env = '/home/dotcloud/environment.json';
-paths.src = path.join(paths.root, 'src');
-require.paths.unshift(paths.src);
-
-require('config').load(paths.env, 'utf-8', function(config){
-	require('apiserver').start(config, 8080);
-});
+if (process.argv.length > 2) {
+	require('config').load(process.argv[2], 'utf-8', function(config){
+		require('apiserver').start(config, 8080);
+	});
+} else {
+	console.error('usage: %s %s path/to/environment.json', process.argv[0], process.argv[1]);
+}
