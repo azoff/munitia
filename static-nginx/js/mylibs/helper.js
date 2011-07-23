@@ -4,10 +4,6 @@
 (function(document){
 
 window.MBP = window.MBP || {}; 
-
-// Fix for iPhone viewport scale bug 
-// http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
-
 MBP.viewportmeta = document.querySelector && document.querySelector('meta[name="viewport"]');
 MBP.ua = navigator.userAgent;
 
@@ -17,23 +13,16 @@ MBP.scaleFix = function () {
     document.addEventListener("gesturestart", MBP.gestureStart, false);
   }
 };
+
 MBP.gestureStart = function () {
     MBP.viewportmeta.content = "width=device-width, minimum-scale=0.25, maximum-scale=1.6";
 };
-
-
-// Hide URL Bar for iOS
-// http://remysharp.com/2010/08/05/doing-it-right-skipping-the-iphone-url-bar/
 
 MBP.hideUrlBar = function () {
     /iPhone/.test(MBP.ua) && !pageYOffset && !location.hash && setTimeout(function () {
       window.scrollTo(0, 1);
     }, 1000);
 };
-
-
-// Fast Buttons - read wiki below before using
-// https://github.com/shichuan/mobile-html5-boilerplate/wiki/JavaScript-Helper
 
 MBP.fastButton = function (element, handler) {
     this.element = element;
@@ -108,18 +97,10 @@ if (document.addEventListener) {
                             
 MBP.coords = [];
 
-
-// iOS Startup Image
-// https://github.com/shichuan/mobile-html5-boilerplate/issues#issue/2
-
 MBP.splash = function () {
     var filename = navigator.platform === 'iPad' ? 'h/' : 'l/';
     document.write('<link rel="apple-touch-startup-image" href="/img/' + filename + 'splash.png" />' );
 };
-
-
-// Autogrow
-// http://googlecode.blogspot.com/2009/07/gmail-for-mobile-html5-series.html
 
 MBP.autogrow = function (element, lh) {
 
