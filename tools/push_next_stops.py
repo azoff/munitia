@@ -7,9 +7,9 @@ import pymongo
 import sys
 import indexer
 
-def push_next_stops(routes_filename, trips_filename, stop_times_filename):
+def push_next_stops(routes_filename, trips_filename, stop_times_filename, mongo_pw):
     """Formats stop sequences by route."""
-    connection = pymongo.Connection('mongodb://root:lcKkmyqBup1aZrTKSHYX@149f8b26.dotcloud.com:9072')
+    connection = pymongo.Connection('mongodb://root:%s@149f8b26.dotcloud.com:9072'%mongo_pw)
     db = connection.munitia
     routes = indexer.build_routes_ndx(routes_filename)
     trips = indexer.build_trips_ndx(trips_filename)
@@ -45,15 +45,16 @@ def main():
         usage()
         sys.exit(2)
 
-    if len(args) < 3:
+    if len(args) < 4:
         usage()
         sys.exit(3)
 
     routes_filename = args[0]
     trips_filename = args[1]
     stop_times_filename = args[2]
+    mongo_pw = args[3]
 
-    push_next_stops(routes_filename, trips_filename, stop_times_filename)
+    push_next_stops(routes_filename, trips_filename, stop_times_filename, mongo_pw)
 
     
 if __name__ == '__main__':

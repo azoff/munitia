@@ -4,9 +4,9 @@ import os
 import pymongo
 import sys
 
-def import_stops(filename):
+def import_stops(filename, mongo_pw):
     """Imports transit stops from filename into MongoDB."""
-    connection = pymongo.Connection('mongodb://root:lcKkmyqBup1aZrTKSHYX@149f8b26.dotcloud.com:9072')
+    connection = pymongo.Connection('mongodb://root:%s@149f8b26.dotcloud.com:9072'%mongo_pw)
     db = connection.munitia
     print db
     print db.stops
@@ -37,7 +37,7 @@ def usage():
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:", ["filename="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:p:", ["filename="])
     except getopt.GetoptError, err:
         # print help info and exit
         print str(err)
@@ -45,15 +45,18 @@ def main():
         sys.exit(2)
 
     filename = None
+    mongo_pw = ''
     for o, a in opts:
         if o in ("-f", "--filename"):
             filename = a
+        if o in ("-p"):
+            mongo_pw = a
 
     if filename == None:
         usage()
         sys.exit(3)
 
-    import_stops(filename)
+    import_stops(filename, mongo_pw)
 
 if __name__ == '__main__':
     main()
