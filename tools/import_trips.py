@@ -4,8 +4,8 @@ import os
 import pymongo
 import sys
 
-def import_stops(filename):
-    """Imports transit stops from filename into MongoDB."""
+def import_trips(filename):
+    """Imports transit trips from filename into MongoDB."""
     connection = pymongo.Connection('mongodb://root:lcKkmyqBup1aZrTKSHYX@149f8b26.dotcloud.com:9072')
     db = connection.munitia
     print db
@@ -15,25 +15,26 @@ def import_stops(filename):
     for line in f.readlines():
         if line.startswith('#'):
             continue
-        if line.startswith('stop_id'):
+        if line.startswith('route_id'):
             continue
         count += 1
         print 'line=%s='%line.strip()
         splitted = line.strip().split(',')
         if len(splitted) == 7:
-            # stop_id,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url
-            # 98,2ND ST & MARKET ST, ,37.789255,-122.401225, , 
+            # ==> trips.txt <==
+            # route_id,service_id,trip_id,trip_headsign,direction_id,block_id,shape_id
+            # 5998,3,4117187,Geary & 33rd Ave,0,311094,66621
 
-            (stop_id, name, unused, lat, long, unused2, unused3) = splitted
-            print 'Inserting %s %s %s %s'%(stop_id, name, long, lat)
+            (route_id, service_id, trip_id, trip_headsign, direction_id, block_id, shape_id) = splitted
+            print 'Inserting %s %s %s %s %s'%(route_id, service_id, trip_id, trip_headsign, direction_id)
             #print db.stops.find_one({"stop_id" : 98})
-            print db.stops.insert({"stop_id" : stop_id, "name" : name, "loc" : [float(long), float(lat)]})
+            print db.trips.insert({"trip_id" : trip_id, "service_id" : service_id, "route_id": route_id, "trip_headsign" : trip_headsign, "direction_id": direction_id, "block_id": block_id, "direction_id": direction_id})
         elif len(splitted) != 0:
             print 'Badly formatted line, expected 7 fields: %s'%line
-    print 'inserted %d stops'%count
+    print 'inserted %d trips'%count
 
 def usage():
-    print 'import_stops.py -f file-to-import.txt'
+    print 'import_trips.py -f file-to-import.txt'
 
 def main():
     try:
@@ -53,7 +54,7 @@ def main():
         usage()
         sys.exit(3)
 
-    import_stops(filename)
+    import_trips(filename)
 
 if __name__ == '__main__':
     main()
