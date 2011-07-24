@@ -4,9 +4,9 @@ import os
 import pymongo
 import sys
 
-def lines_to_stops(routes_filename, trips_filename, stop_times_filename):
+def lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_pw):
     """Adds route/trip information to stops."""
-    connection = pymongo.Connection('mongodb://root:lcKkmyqBup1aZrTKSHYX@149f8b26.dotcloud.com:9072')
+    connection = pymongo.Connection('mongodb://root:%s@149f8b26.dotcloud.com:9072'%mongo_pw)
     db = connection.munitia
     routes = {}
     trips = {}
@@ -96,7 +96,7 @@ def lines_to_stops(routes_filename, trips_filename, stop_times_filename):
     print 'inserted %d lines'%count
 
 def usage():
-    print 'lines_to_stops.py routes.txt trips.txt stop_times.txt'
+    print 'lines_to_stops.py routes.txt trips.txt stop_times.txt mongo_pw'
 
 def main():
     try:
@@ -107,15 +107,16 @@ def main():
         usage()
         sys.exit(2)
 
-    if len(args) < 3:
+    if len(args) < 4:
         usage()
         sys.exit(3)
 
     routes_filename = args[0]
     trips_filename = args[1]
     stop_times_filename = args[2]
+    mongo_pw = args[3]
 
-    lines_to_stops(routes_filename, trips_filename, stop_times_filename)
+    lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_pw)
 
     
 if __name__ == '__main__':
