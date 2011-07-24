@@ -19,7 +19,7 @@ jQuery(function(){
         if (session) {
             munitia.users.find({ facebook_id: session.uid }, onGetUser);
         } else {
-            oldUser.addClass('hidden');
+            returningUser.addClass('hidden');
             newUser.addClass('hidden');
             login.removeClass('hidden');
         }
