@@ -1,7 +1,7 @@
 /*
  * MBP - Mobile boilerplate helper functions
  */
-(function(document){
+(function(document, yepnope){
 
 window.MBP = window.MBP || {}; 
 MBP.viewportmeta = document.querySelector && document.querySelector('meta[name="viewport"]');
@@ -124,5 +124,11 @@ MBP.autogrow = function (element, lh) {
                                element.attachEvent('onkeyup', handler);
 };
 
-})(document);
+MBP.scaleFix();
+yepnope({
+  test : Modernizr.mq('(min-width)'),
+  nope : ['js/libs/respond.min.js']
+});
+
+})(document, yepnope);
 
