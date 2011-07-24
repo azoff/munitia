@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html class="no-js">
 <head>
     <meta charset="utf-8">
-    <title>Munitia - Public Trivia</title>
+    <title>Munitia - Sign Up!</title>
     <meta name="description" content="Play trivia while riding the bus">
     <meta name="author" content="Munitia Holdings Corp.">
     <meta name="HandheldFriendly" content="True">
@@ -28,28 +28,23 @@
 <body>
     <div id="container">
         <header></header>
-        <div id="newuser" class="hidden">New User</div>
-        <div id="olduser" class="hidden">Old User</div>
-        <div id="login" class="hidden">
-            <fb:login-button registration-url="/register" on-login="munitia.updateModel" />
+        <div id="register">
+            <script>
+                document.write('<fb:registration redirect-uri="' + [scheme,'',domain].join('/') + '" fb_only="true" fields="name"></fb:registration>');
+            </script>           
         </div>
         <footer></footer>
     </div>
     <div id="fb-root"></div>    
-    <script> 
+    <script>
         yepnope([
-            scheme + "//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js",          
-            scheme + ("https:"===scheme?"//ssl":"//www") + ".google-analytics.com/ga.js",
-            "/js/mylibs/helper.js",
-            "/js/mylibs/" + domain + ".js",
-            "/js/mylibs/munitia.utils.js",
-            "/js/mylibs/munitia.events.js",
-            "/js/mylibs/munitia.users.js",
-            "/js/mylibs/munitia.api.js",
-            "/js/mylibs/munitia.facebook.js",
-            "/js/index.js",
-            scheme + "//connect.facebook.net/en_US/all.js"
-        ]); 
+			scheme + "//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js",			
+			scheme + ("https:"===scheme?"//ssl":"//www") + ".google-analytics.com/ga.js",
+			"/js/mylibs/helper.js",
+			"/js/mylibs/" + domain + ".js",
+			"/js/mylibs/munitia.facebook.js",
+			scheme + "//connect.facebook.net/en_US/all.js"
+        ]);     
     </script>   
 </body>
 </html>
