@@ -2,8 +2,7 @@
     
     var module = namespace.facebook = {
         
-        checkSession: function(callback) {                                        
-            namespace.events.one('facebook:session', callback);
+        checkSession: function() {
             if (module._initialized) {
                 FB.getLoginStatus(function(response) {
                     namespace.events.trigger('facebook:session', response.session);

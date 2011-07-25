@@ -5,8 +5,10 @@
         
         execute: function(type, path, data) {
             var url = [namespace.API_ROOT, path].join('/');
-            namespace.utils.log(type, url, data);
-            return $.ajax({ url: url, data: data, type: type });
+            namespace.utils.log(type, url, $.param(data));
+            return $.ajax({ url: url, data: data, type: type }).complete(function(xhr){
+                namespace.utils.log(xhr.status, xhr.responseText);
+            });
         },
         
         get: function(key, data) {

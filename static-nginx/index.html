@@ -28,10 +28,10 @@
 <body>
     <div id="container">
         <header></header>
-        <div id="newuser" class="hidden">New User</div>
-        <div id="olduser" class="hidden">Old User</div>
+        <div id="new-user" class="hidden">New User</div>
+        <div id="returning-user" class="hidden">Returning User</div>
         <div id="login" class="hidden">
-            <fb:login-button registration-url="/register" on-login="munitia.facebook.checkSession" />
+            <fb:login-button registration-url="/register" on-login="munitia.facebook.checkSession()" />
         </div>
         <footer></footer>
     </div>

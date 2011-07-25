@@ -2,36 +2,33 @@
 jQuery(function(){
     
     var $ = jQuery,
-    log = munitia.utils.log,
-    returningUser = $("#returninguser"), 
-    newUser = $("#newuser"), 
+    returningUser = $("#returning-user"), 
+    newUser = $("#new-user"), 
     login = $("#login");
     
     function onGetUser(foundUser) {
         if (foundUser) {
-            log('Existing user found:', foundUser);
             returningUser.removeClass('hidden');
             newUser.addClass('hidden');
         } else {
-            log('No existing user found!');
             returningUser.addClass('hidden');
             newUser.removeClass('hidden');
         }
     }
     
     function onFacebookSession(event, session) {           
+        returningUser.addClass('hidden');
+        newUser.addClass('hidden');
         if (session) {
-            log("Facebook session detected:", session);
+            login.addClass('hidden');
             munitia.users.find({ facebook_id: session.uid }, onGetUser);
         } else {
-            log("No Facebook session detected!");
-            returningUser.addClass('hidden');
-            newUser.addClass('hidden');
             login.removeClass('hidden');
         }
     }
     
-    log("Checking facebook session...");
-    munitia.facebook.checkSession(onFacebookSession);
+    munitia.events.bind('facebook:session', onFacebookSession);
+    
+    munitia.facebook.checkSession();
     
 });
