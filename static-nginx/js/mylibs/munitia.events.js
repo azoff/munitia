@@ -1,8 +1,8 @@
-(function(package, $){
+(function(namespace, $){
     
     var emitter = $({}),
     
-    module = package.events = {
+    module = namespace.events = {
         
         one: function(event, data, handler) {
             if (!handler) { handler = data; }

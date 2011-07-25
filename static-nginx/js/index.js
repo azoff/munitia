@@ -9,7 +9,7 @@ jQuery(function(){
     
     function onGetUser(foundUser) {
         if (foundUser) {
-            log('Existing user found:', JSON.stringify(foundUser));
+            log('Existing user found:', foundUser);
             returningUser.removeClass('hidden');
             newUser.addClass('hidden');
         } else {
@@ -21,7 +21,7 @@ jQuery(function(){
     
     function onFacebookSession(event, session) {           
         if (session) {
-            log("Facebook session detected:", JSON.stringify(session));
+            log("Facebook session detected:", session);
             munitia.users.find({ facebook_id: session.uid }, onGetUser);
         } else {
             log("No Facebook session detected!");

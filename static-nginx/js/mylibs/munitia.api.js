@@ -1,9 +1,11 @@
-(function(package, $){
+/*global jQuery, munitia */
+(function(namespace, $){
     
-    var module = package.api = {
+    var module = namespace.api = {
         
         execute: function(type, path, data) {
-            var url = [package.API_ROOT, path].join('/');
+            var url = [namespace.API_ROOT, path].join('/');
+            namespace.utils.log(type, url, data);
             return $.ajax({ url: url, data: data, type: type });
         },
         
@@ -13,7 +15,7 @@
         
         set: function(key, data) {
             return module.execute('POST', key, data);
-        },
+        }
         
     },
     
@@ -22,13 +24,14 @@
     if (domain.length > 2) {
         tld = domain.pop(); domain = domain.pop();
         try { document.domain = [domain, tld].join('.'); }
-        catch(e) { package.utils.error(e); }
+        catch(e) { namespace.utils.error(e); }
     }
     
     $.ajaxSetup({
         cache: false,
+        crossDomain: true,
         dataType: 'json',
-        isLocal: package.LOCAL_MODE
+        isLocal: namespace.LOCAL_MODE
     });
     
 })(munitia, jQuery);

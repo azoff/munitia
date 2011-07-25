@@ -1,16 +1,16 @@
-(function(package, $, logger){
+(function(namespace, $, logger){
     
-    var module = package.utils = {
+    var module = namespace.utils = {
     
         log: function() {
-            if (logger && package.LOGGING_ENABLED) {
+            if (logger && namespace.LOGGING_ENABLED) {
                 var args = $.makeArray(arguments);
                 logger.log.apply(logger, args);
             }
         },
         
         error: function() {
-            if (logger && package.LOGGING_ENABLED) {
+            if (logger && namespace.LOGGING_ENABLED) {
                 var args = $.makeArray(arguments);
                 logger.error.apply(logger, args);
             }

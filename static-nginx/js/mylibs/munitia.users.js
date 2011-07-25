@@ -1,11 +1,11 @@
-(function(package, $, logger){
+(function(namespace, $, logger){
     
-    var module = package.users = {
+    var module = namespace.users = {
     
         User: User,
     
         find: function(criteria, callback) {
-            package.api.get('user', criteria).success(function(model){
+            namespace.api.get('user', criteria).success(function(model){
                 callback.call(null, new User(model));
             }).error(function(){
                 callback.call(null);

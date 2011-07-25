@@ -1,22 +1,22 @@
-(function(package, $, global){
+(function(namespace, $, global){
     
-    var module = package.facebook = {
+    var module = namespace.facebook = {
         
         checkSession: function(callback) {                                        
-            package.events.one('facebook:session', callback);
+            namespace.events.one('facebook:session', callback);
             if (module._initialized) {
                 FB.getLoginStatus(function(response) {
-                    package.events.trigger('facebook:session', response.session);
+                    namespace.events.trigger('facebook:session', response.session);
                 });
             } else {
-                package.events.one('facebook:init', module.checkSession);
+                namespace.events.one('facebook:init', module.checkSession);
             }
         },
         
         asyncInit: function() {                         
             FB.init({ appId: munitia.FB_APP_ID, xfbml: true });    
             module._initialized = true;
-            package.events.trigger('facebook:init');
+            namespace.events.trigger('facebook:init');
         }
         
     };
