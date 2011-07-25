@@ -1,30 +1,37 @@
+/*global JSON, jQuery, munitia */
 jQuery(function(){
     
-    var
+    var $ = jQuery,
+    log = munitia.utils.log,
     returningUser = $("#returninguser"), 
     newUser = $("#newuser"), 
     login = $("#login");
     
     function onGetUser(foundUser) {
         if (foundUser) {
+            log('Existing user found:', JSON.stringify(foundUser));
             returningUser.removeClass('hidden');
             newUser.addClass('hidden');
         } else {
+            log('No existing user found!');
             returningUser.addClass('hidden');
             newUser.removeClass('hidden');
         }
     }
     
-    function onFacebookSession(event, session) {   
+    function onFacebookSession(event, session) {           
         if (session) {
+            log("Facebook session detected:", JSON.stringify(session));
             munitia.users.find({ facebook_id: session.uid }, onGetUser);
         } else {
+            log("No Facebook session detected!");
             returningUser.addClass('hidden');
             newUser.addClass('hidden');
             login.removeClass('hidden');
         }
     }
     
+    log("Checking facebook session...");
     munitia.facebook.checkSession(onFacebookSession);
     
 });
