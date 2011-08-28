@@ -22,9 +22,7 @@ def lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_p
             #route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
             #5998,SFMTA,1,CALIFORNIA, ,3, , ,
             (route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color) = splitted
-            if route_id == "1105":
-                print "OK"
-            routes[route_id] = {"route_id":route_id, "agency_id":agency_id, "route_short_name":route_short_name, "route_long_name":route_long_name}
+            routes[route_id] = {'route_id':route_id, 'agency_id':agency_id, 'route_short_name':route_short_name, 'route_long_name':route_long_name}
     f.close()
 
     f = file(trips_filename, 'r')
@@ -39,9 +37,7 @@ def lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_p
             # route_id,service_id,trip_id,trip_headsign,direction_id,block_id,shape_id
             # 5998,3,4117187,Geary & 33rd Ave,0,311094,66621
             (route_id, service_id, trip_id, trip_headsign, direction_id, block_id, shape_id) = splitted
-            if route_id == "1105":
-                print "OK"
-            trips[trip_id] = {"trip_id": trip_id, "route_id": route_id, "service_id": service_id, "trip_headsign":trip_headsign, "direction_id":direction_id}
+            trips[trip_id] = {'trip_id': trip_id, 'route_id': route_id, 'service_id': service_id, 'trip_headsign':trip_headsign, 'direction_id':direction_id}
     f.close()
 
     print db
@@ -63,22 +59,13 @@ def lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_p
             #4116466,07:09:00,07:09:00,4015,4, , , , 
             (trip_id, arrival_time, departure_time, stop_id, stop_sequence, stop_headsign, pickup_type, drop_off_type,shape_dist_traveled) = splitted
             # print 'trip_id', trip_id
-            if trip_id == '4148627':
-                print 'found tripid'
-            if stop_id == '98':
-                print 'found stopid'
             trip = trips.get(trip_id, None)
             if trip != None:
                 # print 'trip', trip
                 route_id = trip['route_id']
-                if route_id == "1105":
-                    print "OK found route id"
                 route = routes.get(trip['route_id'])
                 if route != None:
-                    if route_id == "1105":
-                        print "ok, found route object."
-
-                    line_name = "%s:%s:%s:%s"%(route_id, route['route_short_name'], route['route_long_name'], trip["direction_id"])
+                    line_name = '%s:%s:%s:%s'%(route_id, route['route_short_name'], route['route_long_name'], trip['direction_id'])
                     lines = line_stops.get(stop_id, None)
                     if lines == None:
                         lines = {}
@@ -90,7 +77,7 @@ def lines_to_stops(routes_filename, trips_filename, stop_times_filename, mongo_p
     for stop_id in line_stops.keys():
         for line in line_stops[stop_id].keys():
             print '%s,%s'%(stop_id, line)
-            print db.stops.update({"stop_id" : stop_id}, {"$push": {"lines": line}})
+            print db.stops.update({'stop_id' : stop_id}, {'$push': {'lines': line}})
             count += 1
 
     print 'inserted %d lines'%count
@@ -100,7 +87,7 @@ def usage():
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "", [""])
+        opts, args = getopt.getopt(sys.argv[1:], '', [''])
     except getopt.GetoptError, err:
         # print help info and exit
         print str(err)
