@@ -15,8 +15,14 @@
             namespace.api.get('find_stops_near', args).success(fn).error(fn);
         },
         
-        renderStops: function(model) {
-            var view = $.isArray(stops) ? 'stop' : 'no-stops';
+        renderStops: function(stops) {
+            var view, model;
+            if ($.isArray(stops)) {
+                view = 'stops';
+                model = { stops: stops };
+            } else {
+                view = 'no-stops';
+            }
             controller.render(view, model, function(html){
                 stage.html(html);
             });
