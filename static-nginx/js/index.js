@@ -4,15 +4,18 @@ jQuery(function(){
     var $ = jQuery,
     returningUser = $("#returning-user"), 
     newUser = $("#new-user"), 
-    login = $("#login");
+    login = $("#login"),
+    stage = $("#stage");
     
-    function onGetUser(foundUser) {
-        if (foundUser) {
+    function onGetUser(user) {
+        if (user) {
             returningUser.removeClass('hidden');
             newUser.addClass('hidden');
+            munitia.game.start(user, stage);            
         } else {
             returningUser.addClass('hidden');
             newUser.removeClass('hidden');
+            munitia.game.end();  
         }
     }
     
