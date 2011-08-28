@@ -13,10 +13,9 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/m/apple-touch-icon.png">
     <link rel="apple-touch-icon-precomposed" href="/img/l/apple-touch-icon-precomposed.png">
     <link rel="shortcut icon" href="/img/l/apple-touch-icon.png">
-    <!--iOS web app, deletable if not needed -->
-    <!--<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-startup-image" href="img/l/splash.png">-->
+    <link rel="apple-touch-startup-image" href="img/l/splash.png">
     <link rel="stylesheet" href="/css/style.css?v=1">
     <script src="/js/libs/modernizr-custom.js"></script>
     <script>
@@ -29,7 +28,9 @@
     <div id="container">
         <header></header>
         <div id="new-user" class="hidden">New User</div>
-        <div id="returning-user" class="hidden">Returning User</div>
+        <div id="returning-user" class="hidden">
+            <div id="stage"></div>
+        </div>
         <div id="login" class="hidden">
             <fb:login-button registration-url="/register" on-login="munitia.facebook.checkSession()" />
         </div>
@@ -45,8 +46,11 @@
             "/js/mylibs/munitia.utils.js",
             "/js/mylibs/munitia.events.js",
             "/js/mylibs/munitia.users.js",
+            "/js/mylibs/munitia.game.js",
             "/js/mylibs/munitia.api.js",
+            "/js/mylibs/munitia.controller.js",
             "/js/mylibs/munitia.facebook.js",
+            { test: Modernizr.geolocation, nope: '/js/libs/geolocation.js' },
             "/js/index.js",
             scheme + "//connect.facebook.net/en_US/all.js"
         ]); 

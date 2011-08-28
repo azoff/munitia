@@ -1,4 +1,4 @@
-(function(namespace, $, logger){
+(function(namespace, geo, $){
     
     var module = namespace.users = {
     
@@ -19,9 +19,15 @@
     }
     
     User.prototype = {
+        
         getUserId: function() {
             return this._model.userId;
+        },
+        
+        geolocate: function(callback) {
+            geo.getCurrentPosition(callback);
         }
+        
     };
     
-})(munitia, jQuery, window.console);
+})(munitia, navigator.geolocation, jQuery);
