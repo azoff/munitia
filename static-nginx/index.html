@@ -40,15 +40,16 @@
     <script> 
         yepnope([
             scheme + "//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js",          
+            scheme + "//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js",
             scheme + ("https:"===scheme?"//ssl":"//www") + ".google-analytics.com/ga.js",
             "/js/mylibs/helper.js",
             "/js/mylibs/" + domain + ".js",
             "/js/mylibs/munitia.utils.js",
             "/js/mylibs/munitia.events.js",
             "/js/mylibs/munitia.users.js",
-            "/js/mylibs/munitia.game.js",
-            "/js/mylibs/munitia.api.js",
             "/js/mylibs/munitia.controller.js",
+            "/js/mylibs/munitia.game.js",
+            "/js/mylibs/munitia.api.js",            
             "/js/mylibs/munitia.facebook.js",
             { test: Modernizr.geolocation, nope: '/js/libs/geolocation.js' },
             "/js/index.js",

@@ -16,7 +16,7 @@
         },
         
         renderStops: function(model) {
-            var view = $.isArray(stops) ? 'stop' : 'no-stops';
+            var view = $.isArray(model) ? 'stops' : 'no-stops';
             controller.render(view, model, function(html){
                 stage.html(html);
             });
