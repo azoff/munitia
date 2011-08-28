@@ -1,1 +1,6 @@
-<div class="stop">${name}<div>
+<div class="stops">
+    <h1 class="stops-header">Pick a Stop</h1>
+    {{each stops}}
+        <a class="stop">${$value.name}</a>
+    {{/each}}    
+</div>
