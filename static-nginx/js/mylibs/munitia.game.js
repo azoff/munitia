@@ -21,8 +21,13 @@
             namespace.api.get('find_stops_near', args).success(fn).error(fn);
         },
         
-        selectLine: function(event) {
-            
+        selectStop: function(event) { var 
+            element = $(event.target),
+            stopIndex = parseInt(element.data('stop'), 10),
+            lineIndex = parseInt(element.data('line'), 10),
+            stop = stops[stopIndex],
+            line = stop.lines[lineIndex];
+            console.log(stop, line);
         },        
         
         renderLines: function(model) { 
@@ -30,7 +35,7 @@
             model = { stops: stops };
             var view = stops.length ? 'stops' : 'no-stops';
             controller.render(view, model, function(html){
-                stage.html(html).delegate('.line', 'click', module.selectLine);
+                stage.html(html).delegate('.line', 'click', module.selectStop);
             });
         }
         
