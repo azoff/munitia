@@ -73,6 +73,7 @@ button {  width: auto; overflow: visible; }
 body, select, input, textarea {
   color: #444;
   font-family: Georgia, serif;
+  font-size: 20px;
 }
 h1, h2, h3, h4, h5, h6 { font-weight: bold; }
 a, a:active, a:visited { color: #607890; }
@@ -114,9 +115,14 @@ textarea.contenteditable {-webkit-appearance: none;}
 .clearfix { zoom: 1; }
 
 /* global app styles */
-.stops { padding: 0 15px; }
-.stops-header { font-size: 25px; line-height: 44px; cursor: pointer; text-transform: uppercase; text-align: center; }
-.stop { display: block; font-size: 25px; line-height: 44px; cursor: pointer; text-transform: uppercase; text-align: center; }
+.stops { padding: 0.5em 1em; }
+.stops-header { font-size: 2em; line-height: 1.5; }
+.stop { }
+    
+.lines { padding: 0.5em 1em; }
+.stop-header { font-size: 1.5em; line-height: 1.5; }
+.line { display: block; font-size: 1em; margin-bottom: 0.5em; cursor: pointer; text-transform: uppercase; }
+
 .no-stops { font-size: 25px; line-height: 44px; color: red; }
 
 /*styles for 800px and up!*/

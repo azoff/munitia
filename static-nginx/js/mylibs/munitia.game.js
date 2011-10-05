@@ -1,6 +1,8 @@
 (function(namespace, $){ var 
     
-    stage, controller = namespace.controller,
+    stage, stops,
+    
+    controller = namespace.controller,
     
     module = namespace.game = {
 
@@ -9,22 +11,26 @@
             user.geolocate(module.loadStops);
         },    
         
+        end: function() {
+            
+        },
+        
         loadStops: function(location) { var
-            coords = location.coords, fn = module.renderStops,
+            coords = location.coords, fn = module.renderLines,
             args = { lt: coords.latitude, lg: coords.longitude };
             namespace.api.get('find_stops_near', args).success(fn).error(fn);
         },
         
-        renderStops: function(stops) {
-            var view, model;
-            if ($.isArray(stops)) {
-                view = 'stops';
-                model = { stops: stops };
-            } else {
-                view = 'no-stops';
-            }
+        selectLine: function(event) {
+            
+        },        
+        
+        renderLines: function(model) { 
+            stops = namespace.stops.fromModels(model, namespace.stops.hasLineFilter);
+            model = { stops: stops };
+            var view = stops.length ? 'stops' : 'no-stops';
             controller.render(view, model, function(html){
-                stage.html(html);
+                stage.html(html).delegate('.line', 'click', module.selectLine);
             });
         }
         

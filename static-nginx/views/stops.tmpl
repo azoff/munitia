@@ -1,6 +1,13 @@
 <div class="stops">
-    <h1 class="stops-header">Pick a Stop</h1>
-    {{each stops}}
-        <a class="stop">${$value.name}</a>
+    <h1 class="stops-header">Pick a Line</h1>
+    {{each(i, stop) stops}}
+        <div class="stop">
+            <h2 class="stop-header">${stop}</h2>
+            <div class="lines">
+                {{each(j, line) stop.lines}}
+                    <a data-stop="${i}" data-line="${j}" class="line">${line.prettyName()}</a>
+                {{/each}} 
+            </div>
+        </div>
     {{/each}}    
 </div>
