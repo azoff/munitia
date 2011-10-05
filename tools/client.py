@@ -8,19 +8,36 @@ import sys
 37.774929&lg=-122.419415
 """
 
-def find_stops_near(latitude, longitude):
-    """Find the stops near the given point."""
-    f = urllib2.urlopen('http://localhost:8080/find_stops_near?lt=%s&lg=%s'%(latitude, longitude))
+def hit_url(url):
+    f = urllib2.urlopen(url)
     x = f.read()
     result = json.loads(x)
     return result
 
+
+class MunitiaClient():
+    def __init__(self):
+        self.host = 'localhost'
+        self.port = 8080
+        pass
+
+    def build_url(self, cmd):
+        return 'http://%s:%d/%s'%(self.host, self.port, cmd)
+
+    def find_stops_near(self, args):
+        """Find the stops near the given point."""
+        return hit_url(self.build_url('find_stops_near?lt=%s&lg=%s'%(args[0], args[1])))
+
+    def find_round(self, args):
+        """Finds the nearest round."""
+        return hit_url(self.build_url('find_round?lt=%s&lg=%s'%(args[0], args[1])))
+
 def execute_cmd(cmd_name, args):
     """Execute the specified client command with the specified arguments."""
-    if cmd_name == 'find_stops_near':
-        result = find_stops_near(args[0], args[1])
-        print json.dumps(result)
-        
+    method = getattr(MunitiaClient, cmd_name, None)
+    m = MunitiaClient()
+    if method != None:
+        print json.dumps(method(m, args))
 
 def usage():
     print 'client.py cmd *arg1* *arg2* ...'
