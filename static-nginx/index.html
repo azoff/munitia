@@ -18,20 +18,21 @@
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>	
     <script src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
     <script src="http://connect.facebook.net/en_US/all.js"></script>
-    <script src="http://www.google-analytics.com/ga.js"></script>    
+    <script src="http://www.google-analytics.com/ga.js"></script>
 </head>
 
-<body data-state="logged-out">
+<body class="logged-out">
     <div id="main-page" data-role="page">
     	<div data-role="header" data-position="inline">
+    	    <a href="#state?name=logout" class="ui-btn-left when-logged-in" data-role="button" data-icon="arrow-l" data-iconpos="left">Log Out</a>
     	    <h1>Welcome</h1>
-    		<a id="login-button" class="ui-btn-right stateful state-logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
+    		<a href="#state?name=login" class="ui-btn-right when-logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
     	</div>
     	<div id="content" data-role="content">
     	   
     	</div>
     	<div data-role="footer" data-position="fixed">
-    		<div class="stateful state-logged-in" data-role="navbar">
+    		<div class="when-logged-in" data-role="navbar">
                 <ul>
             		<li><a href="/" class="ui-btn-active">Current Game</a></li>
             		<li><a href="#friends">Invite Friends</a></li>
@@ -39,6 +40,13 @@
             </div>
     	</div>
     </div>
+    <div id="fb-root"></div>
+    <script src="/src/munitia.js"></script>
+    <script src="/src/munitia.controller.js"></script>
+    <script src="/src/munitia.users.js"></script>
+    <script src="/src/munitia.session.js"></script>
+    <script src="/src/munitia.users.js"></script>
+    <script src="/bootstrapper.js"></script>
 </body>
 
 </html>

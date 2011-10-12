@@ -1,5 +1,4 @@
-.stateful { display: none }
-[data-state~=logged-out] .state-logged-out { display: inline; }
+.logged-in .when-logged-out, .logged-out .when-logged-in { display: none !important; }
 
 body { 
     background-color:#f0f0f0;
