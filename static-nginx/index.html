@@ -7,12 +7,12 @@
     <meta name="description" content="Play trivia while riding the bus">
     <meta name="author" content="Jonathan Azoff <jon@azoffdesign.com>">
     <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="320"/>    
+    <meta name="MobileOptimized" content="320">    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="//code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
-    <link rel="stylesheet" href="/themes/default.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css">
+    <link rel="stylesheet" href="/themes/default.css">
     <link rel="shortcut icon" href="/images/favicon.png">
     <script>window._gaq=[["_setAccount","UA-24616806-1"],["_trackPageview"]]</script>
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
@@ -22,18 +22,16 @@
     <script src="http://www.google-analytics.com/ga.js"></script>
 </head>
 
-<body class="logged-out">
+<body>
     <div id="game" data-role="page">
     	<div data-role="header" data-position="inline">
-    	    <a href="#state?name=logout" class="ui-btn-left when-logged-in" data-role="button" data-icon="arrow-l" data-iconpos="left">Log Out</a>
+    	    <a href="#state?name=logout" class="ui-btn-left hidden logged-in" data-role="button" data-icon="arrow-l" data-iconpos="left">Log Out</a>
     	    <h1>Welcome</h1>
-    		<a href="#state?name=login" class="ui-btn-right when-logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
+    		<a href="#state?name=login" class="ui-btn-right logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
     	</div>
-    	<div id="content" data-role="content">
-    	   
-    	</div>
-    	<div data-role="footer" data-position="fixed">
-    		<div class="when-logged-in" data-role="navbar">
+    	<div id="content" data-role="content"></div>
+    	<div class="logged-in hidden" data-role="footer" data-position="fixed">
+    		<div data-role="navbar">
                 <ul>
             		<li><a class="ui-btn-active">Current Game</a></li>
             		<li><a>Invite Friends</a></li>

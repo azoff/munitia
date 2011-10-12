@@ -1,4 +1,4 @@
-.logged-in .when-logged-out, .logged-out .when-logged-in { display: none !important; }
+.hidden { display: none !important; }
 
 body { 
     background-color:#f0f0f0;

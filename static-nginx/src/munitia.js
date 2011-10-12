@@ -2,10 +2,31 @@
     
      module = global.munitia = {
     
+        extend: function(name, submodule) {
+            return module[name] = submodule;
+        },
+    
         utils: {
+            
+            makeDeferred: function(fn) {
+                var deferred = new $.Deferred()
+                return function() {
+                    fn(); deferred.resolve();
+                    return deferred.promise();
+                };
+            },
             
             fetch: function(obj, prop, defalt) {
                 return obj.hasOwnProperty(prop) ? obj[prop] : (defalt || '');
+            },
+            
+            ensureArray: function(obj, prop) {
+                if (!obj.hasOwnProperty(prop)) {
+                    obj[prop] = [];
+                } else if(!$.isArray(obj[prop])) {
+                    obj[prop] = [obj[prop]];
+                }    
+                return obj[prop];
             },
             
             dir: function() {
@@ -34,6 +55,5 @@
     };
     
     global.trace = module.utils.log;
-    global.fetch = module.utils.fetch;
     
 })(window, window.console, jQuery);

@@ -1,19 +1,22 @@
 (function(global, namespace, doc, mobile, $){ var 
     
     page = $('#game'),
-    frame = $(global),    
+    root = $(doc),    
     body = $(doc.body),
+    utils = namespace.utils,
     
-    module = namespace.controller = {
+    module = namespace.extend('controller', {
         
         _hooks: {},
         
-        setChangeHook: function(state, handler) {
-            module._hooks[state] = handler;
+        addChangeHook: function(state, handler, async) { 
+            var hooks = module.getChangeHooks(state);
+            if (!async) { handler = utils.makeDeferred(handler); }
+            hooks.push(handler);
         },
         
-        getChangeHook: function(state) {
-            return fetch(module._hooks, state, null);
+        getChangeHooks: function(state) {
+            return utils.ensureArray(module._hooks, state);
         },
         
         changeState: function(state, options) {                       
@@ -30,15 +33,13 @@
             mobile.hidePageLoadingMsg()
         },
         
-        executeStateChange: function(state, data) {
-            var hook = module.getChangeHook(state);
-            if (hook) {
-                hook(page, data);
-                page.page();
-            } else {
-                body.attr('class', state);
-                frame.trigger('resize');                
-            }            
+        executeStateChange: function(state, data) { 
+            var hooks = module.getChangeHooks(state);
+            if (hooks.length) {
+                $.when.apply($, $.map(hooks, function(hook){
+                    return hook(page, data);
+                })).then(function(){ page.page(); });
+            }
         },
         
         handleStateChange: function(event, data) { var 
@@ -58,8 +59,8 @@
             }
         }
         
-    };
+    });
     
-    $(doc).bind('pagebeforechange', module.handleStateChange);
+    root.bind('pagebeforechange', module.handleStateChange);
     
 })(window, munitia, document, jQuery.mobile, jQuery);

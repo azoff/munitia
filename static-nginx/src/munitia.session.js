@@ -3,15 +3,12 @@
     controller = namespace.controller,
     users = namespace.users,
     
-    module = namespace.session = {
+    module = namespace.extend('session', {
         
         start: function() {
             controller.showLoader();
             event.subscribe('auth.statusChange', module.onUpdate);            
-            fb.init({ 
-                appId: namespace.settings.fbAppId, 
-                oauth: module.user = true
-            });
+            fb.init({ appId: namespace.settings.fbAppId, oauth: true });
         },
         
         login: function() {
@@ -28,7 +25,7 @@
         },
         
         onUpdate: function(response) {
-            var model = response.authResponse;
+            var model = response.authResponse;          
             if (model) {
                 module.user = new users.User(model);
                 controller.changeState('logged-in');
@@ -37,11 +34,23 @@
                 controller.changeState('logged-out');
             }
             controller.hideLoader();
+        },
+        
+        onLoggedIn: function() {
+            $('.logged-in').removeClass('hidden');
+            $('.logged-out').addClass('hidden');
+        },
+        
+        onLoggedOut: function() {
+            $('.logged-out').removeClass('hidden');
+            $('.logged-in').addClass('hidden');
         }
         
-    };
+    });
     
-    controller.setChangeHook('login', module.login);
-    controller.setChangeHook('logout', module.logout);
+    controller.addChangeHook('login', module.login);
+    controller.addChangeHook('logout', module.logout);
+    controller.addChangeHook('logged-in', module.onLoggedIn);
+    controller.addChangeHook('logged-out', module.onLoggedOut);
     
 })(munitia, FB, FB.Event, jQuery);

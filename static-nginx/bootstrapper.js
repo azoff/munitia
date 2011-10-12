@@ -1,13 +1,9 @@
 (function(global, doc, load, munitia, $){ 
     
     function main() {
-        munitia.session.start();
+        $(doc).ready(munitia.session.start);
     }
     
-    function loaded() {
-        $(doc).ready(main);
-    }
-    
-    load('/conf/'+doc.domain+'.js', loaded);
+    load('/conf/'+doc.domain+'.js', main);
     
 })(window, document, jQuery.getScript, munitia, jQuery);
