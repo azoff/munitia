@@ -6,25 +6,25 @@
     module = namespace.session = {
         
         start: function() {
-            event.subscribe('auth.statusChange', module.onUpdate);
-            module.login();
+            controller.showLoader();
+            event.subscribe('auth.statusChange', module.onUpdate);            
+            fb.init({ 
+                appId: namespace.settings.fbAppId, 
+                oauth: module.user = true
+            });
         },
         
         login: function() {
             if (!module.user) {
                 controller.showLoader('logging in');
-                fb.init({ 
-                    appId: namespace.settings.fbAppId, 
-                    cookie: module.user = true, 
-                    xfbml: true, oauth: true
-                });
+                fb.login();     
             } else {
                 controller.changeState('logged-in');
             }
         },
         
         logout: function() {
-            controller.changeState('logged-out');
+            fb.logout();
         },
         
         onUpdate: function(response) {
@@ -34,13 +34,13 @@
                 controller.changeState('logged-in');
             } else {
                 module.user = null;
-                module.logout();
+                controller.changeState('logged-out');
             }
         }
         
     };
     
-    controller.setPostChangeHook('login', module.login);
-    controller.setPostChangeHook('logout', module.logout);
+    controller.setChangeHook('login', module.login);
+    controller.setChangeHook('logout', module.logout);
     
 })(munitia, FB, FB.Event, jQuery);

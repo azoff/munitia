@@ -6,24 +6,14 @@
     
     module = namespace.controller = {
         
-        _preHooks: {},
+        _hooks: {},
         
-        _postHooks: {},
-        
-        setPreChangeHook: function(state, handler) {
-            module._preHooks[state] = handler;
-        },
-            
-        setPostChangeHook: function(state, handler) {
-            module._postHooks[state] = handler;
+        setChangeHook: function(state, handler) {
+            module._hooks[state] = handler;
         },
         
-        getPreChangeHook: function(state) {
-            return fetch(module._preHooks, state, $.noop);
-        },
-        
-        getPostChangeHook: function(state) {
-            return fetch(module._postHooks, state, $.noop);
+        getChangeHook: function(state) {
+            return fetch(module._hooks, state, null);
         },
         
         changeState: function(state, options) {                       
@@ -41,12 +31,15 @@
         },
         
         executeStateChange: function(state, data) {
-            module.getPreChangeHook(state).call(page, data);
-            body.attr('class', state);
-            page.page(); 
-            frame.trigger('resize');
-            module.getPostChangeHook(state).call(page, data);
-            module.hideLoader();
+            var hook = module.getChangeHook(state);
+            if (hook) {
+                hook(page, data);
+                page.page();
+            } else {
+                body.attr('class', state);
+                frame.trigger('resize');
+                module.hideLoader();
+            }
         },
         
         handleStateChange: function(event, data) { var 
