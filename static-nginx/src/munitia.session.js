@@ -36,6 +36,7 @@
                 module.user = null;
                 controller.changeState('logged-out');
             }
+            controller.hideLoader();
         }
         
     };

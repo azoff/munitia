@@ -1,6 +1,6 @@
 (function(global, namespace, doc, mobile, $){ var 
     
-    page = $('#main-page'),
+    page = $('#game'),
     frame = $(global),    
     body = $(doc.body),
     
@@ -37,9 +37,8 @@
                 page.page();
             } else {
                 body.attr('class', state);
-                frame.trigger('resize');
-                module.hideLoader();
-            }
+                frame.trigger('resize');                
+            }            
         },
         
         handleStateChange: function(event, data) { var 

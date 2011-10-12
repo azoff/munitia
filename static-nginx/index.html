@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" href="//code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
     <link rel="stylesheet" href="/themes/default.css" />
+    <link rel="shortcut icon" href="/images/favicon.png">
     <script>window._gaq=[["_setAccount","UA-24616806-1"],["_trackPageview"]]</script>
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>	
@@ -22,7 +23,7 @@
 </head>
 
 <body class="logged-out">
-    <div id="main-page" data-role="page">
+    <div id="game" data-role="page">
     	<div data-role="header" data-position="inline">
     	    <a href="#state?name=logout" class="ui-btn-left when-logged-in" data-role="button" data-icon="arrow-l" data-iconpos="left">Log Out</a>
     	    <h1>Welcome</h1>
@@ -34,8 +35,8 @@
     	<div data-role="footer" data-position="fixed">
     		<div class="when-logged-in" data-role="navbar">
                 <ul>
-            		<li><a href="/" class="ui-btn-active">Current Game</a></li>
-            		<li><a href="#friends">Invite Friends</a></li>
+            		<li><a class="ui-btn-active">Current Game</a></li>
+            		<li><a>Invite Friends</a></li>
             	</ul>
             </div>
     	</div>
