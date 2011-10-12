@@ -1,62 +1,44 @@
-﻿<!doctype html>
-<html class="no-js">
+<!doctype html>
+<html>
 <head>
     <meta charset="utf-8">
     <title>Munitia - Public Trivia</title>
-    <meta name="description" content="Play trivia while riding the bus">
-    <meta name="author" content="Munitia Holdings Corp.">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="320"/>
     <meta http-equiv="cleartype" content="on">
+    <meta name="description" content="Play trivia while riding the bus">
+    <meta name="author" content="Jonathan Azoff <jon@azoffdesign.com>">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320"/>    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/h/apple-touch-icon.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/m/apple-touch-icon.png">
-    <link rel="apple-touch-icon-precomposed" href="/img/l/apple-touch-icon-precomposed.png">
-    <link rel="shortcut icon" href="/img/l/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-startup-image" href="img/l/splash.png">
-    <link rel="stylesheet" href="/css/style.css?v=1">
-    <script src="/js/libs/modernizr-custom.js"></script>
-    <script>
-        var _gaq=[["_setAccount","UA-24616806-1"],["_trackPageview"]],
-        scheme = location.protocol, domain = document.domain;
-    </script>
+    <link rel="stylesheet" href="//code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
+    <link rel="stylesheet" href="/themes/default.css" />
+    <script>window._gaq=[["_setAccount","UA-24616806-1"],["_trackPageview"]]</script>
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>	
+    <script src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script src="http://www.google-analytics.com/ga.js"></script>    
 </head>
 
-<body>
-    <div id="container">
-        <header></header>
-        <div id="new-user" class="hidden">New User</div>
-        <div id="returning-user" class="hidden">
-            <div id="stage"></div>
-        </div>
-        <div id="login" class="hidden">
-            <fb:login-button registration-url="/register" on-login="munitia.facebook.checkSession()" />
-        </div>
-        <footer></footer>
+<body data-state="logged-out">
+    <div id="main-page" data-role="page">
+    	<div data-role="header" data-position="inline">
+    	    <h1>Welcome</h1>
+    		<a id="login-button" class="ui-btn-right stateful state-logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
+    	</div>
+    	<div id="content" data-role="content">
+    	   
+    	</div>
+    	<div data-role="footer" data-position="fixed">
+    		<div class="stateful state-logged-in" data-role="navbar">
+                <ul>
+            		<li><a href="/" class="ui-btn-active">Current Game</a></li>
+            		<li><a href="#friends">Invite Friends</a></li>
+            	</ul>
+            </div>
+    	</div>
     </div>
-    <div id="fb-root"></div>    
-    <script> 
-        yepnope([
-            scheme + "//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js",          
-            scheme + "//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js",
-            scheme + ("https:"===scheme?"//ssl":"//www") + ".google-analytics.com/ga.js",
-            "/js/mylibs/helper.js",
-            "/js/mylibs/" + domain + ".js",
-            "/js/mylibs/munitia.utils.js",
-            "/js/mylibs/munitia.events.js",
-            "/js/mylibs/munitia.stops.js",
-            "/js/mylibs/munitia.lines.js",
-            "/js/mylibs/munitia.users.js",
-            "/js/mylibs/munitia.controller.js",            
-            "/js/mylibs/munitia.game.js",
-            "/js/mylibs/munitia.api.js",            
-            "/js/mylibs/munitia.facebook.js",
-            { test: Modernizr.geolocation, nope: '/js/libs/geolocation.js' },
-            "/js/index.js",
-            scheme + "//connect.facebook.net/en_US/all.js"
-        ]); 
-    </script>   
 </body>
+
 </html>
