@@ -1,6 +1,6 @@
 (function(namespace, $){ 
     
-    var module = namespace.lines = {
+    var module = namespace.extend('lines', {
     
         DIRECTION_OUTBOUND: 1,
 
@@ -30,7 +30,7 @@
             return new Line(model);
         }
         
-    };
+    });
     
     function Line(model) {
         this.routeId   = parseInt(model.routeId, 10);

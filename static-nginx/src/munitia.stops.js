@@ -1,6 +1,6 @@
 (function(namespace, $){
     
-    var module = namespace.stops = {
+    var module = namespace.extend('stops', {
     
         Stop: Stop,
     
@@ -24,7 +24,7 @@
             return stop.hasLines();
         }
         
-    };
+    });
     
     function Stop(model) {
         this.name = model.name;
