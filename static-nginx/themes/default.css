@@ -11,4 +11,4 @@ body {
     background-repeat: no-repeat;
 }
 
-#game { background: none transparent; }
+[data-role=page] { background: none transparent; }

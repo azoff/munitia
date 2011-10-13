@@ -11,7 +11,8 @@
             makeDeferred: function(fn) {
                 var deferred = new $.Deferred()
                 return function() {
-                    fn(); deferred.resolve();
+                    fn.apply(null, $.makeArray(arguments)); 
+                    deferred.resolve();
                     return deferred.promise();
                 };
             },
