@@ -25,7 +25,7 @@
         },
         
         logout: function() {
-            fb.logout();
+            fb.logout(controller.hideLoader);
         },
         
         onUpdate: function(response) {
