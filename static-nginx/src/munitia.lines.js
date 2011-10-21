@@ -35,8 +35,8 @@
     function Line(model) {
         this.routeId   = parseInt(model.routeId, 10);
         this.direction = parseInt(model.direction, 10);
-        this.shortName = $.trim(model.shortName);
-        this.longName  = $.trim(model.longName);        
+        this.shortName = $.trim(model.shortName).toUpperCase();
+        this.longName  = $.trim(model.longName).toUpperCase();        
     }
     
     Line.prototype = {
@@ -46,20 +46,16 @@
         },
         
         prettyName: function() {
-            var name = [this.shortName, this.prettyDirection()];
-            if (this.longName.length) {
-                name.push('(' + this.longName + ')');
-            }
-            return name.join(' ');
+            return [this.shortName, this.longName, '-', this.prettyDirection()].join(' ');
         },
         
         prettyDirection: function() {
             switch(this.direction) {
                 case module.DIRECTION_OUTBOUND:
-                    return 'outbound';
+                    return 'OUTBOUND';
                 case module.DIRECTION_INBOUND:
                 default:
-                    return 'inbound';
+                    return 'INBOUND';
             }
         }
         

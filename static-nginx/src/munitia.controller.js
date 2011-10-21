@@ -2,6 +2,7 @@
     frame = $(global),
     root = $(doc),    
     body = $(doc.body),
+    defaultPage = null,
     utils = namespace.utils,
     templateCache = {},
     pageHooks = {},
@@ -31,30 +32,33 @@
     
     beforePageChange = function(event, data) {
         var url = data.toPage;
-        if ($.type(url) === 'string') {                                    
+        console.log(url, data.options);
+        if ($.type(url) === 'string') {
             url = mobile.path.parseUrl(url);            
-            getPageFromUrl(url, function(page, selector, args) {
-                var hooks = module.getStateHooks(selector, args.state);                
+            getPageFromUrl(url, function(page, selector, args) { var 
+                hooks = module.getStateHooks(selector, args.state),
+                refresh = function(){ 
+                    page.find('.nav[href=' + selector + ']').addClass('ui-btn-active');
+                    data.options.dataUrl = (url.hrefNoHash || '/') + selector;                
+                    mobile.changePage(page.page(), data.options);
+                    frame.trigger('resize'); 
+                }; 
                 if (hooks.length) {
                     $.when($.map(hooks, function(hook){
                         return hook(page, args);
-                    })).then(function(){ 
-                        page.page(); 
-                    });
+                    })).then(refresh);
                 } else { 
-                    page.page(); 
+                    refresh();
                 }
-                data.options.dataUrl = '/' + selector;
-                utils.log(data.options.dataUrl);
-                mobile.changePage(page, data.options);
-                frame.trigger('resize');
+                
             });
             event.preventDefault();
         }
     },
     
     getPageFromUrl = function(url, callback) { var 
-        parts = url.hash.split('?'), selector = parts[0],
+        parts = url.hash.split('?'), 
+        selector = parts[0] || '#lines',
         page = $(selector), args = { state: 'init' },
         id = selector.replace('#',''),
         processPage = function(page) {
@@ -102,11 +106,11 @@
         
         showLoader: function(msg) {
             mobile.loadingMessage = msg || 'loading';
-            mobile.showPageLoadingMsg()
+            mobile.showPageLoadingMsg();
         },
         
         hideLoader: function() {
-            mobile.hidePageLoadingMsg()
+            mobile.hidePageLoadingMsg();
         },
         
         changePage: function(page, data, options) { var 

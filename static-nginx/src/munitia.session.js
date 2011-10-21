@@ -18,7 +18,7 @@
         login: function() {
             if (!module.user) {
                 controller.showLoader('logging in');
-                fb.login();     
+                fb.login(controller.hideLoader);     
             } else {
                 controller.changePage('#lines', { state: 'logged-in' });
             }
@@ -30,14 +30,13 @@
         
         onUpdate: function(response) {
             var model = response.authResponse;          
-            if (model) {
+            if (model && !module.user) {
                 module.user = new users.User(model);
                 controller.changePage('#lines', { state: 'logged-in' });
-            } else {
+            } else if (module.user) {
                 module.user = null;
                 controller.changePage('#lines', { state: 'logged-out' });
-            }            
-            controller.hideLoader();            
+            }
         },
         
         onLoggedIn: function() {

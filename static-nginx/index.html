@@ -27,14 +27,15 @@
     	<div data-role="header" data-position="inline">
     	    <a href="#lines?state=logout" class="ui-btn-left hidden logged-in" data-role="button" data-icon="arrow-l" data-iconpos="left">Log Out</a>
     	    <h1 class="header">Welcome To Munitia</h1>
+    	    <a href="#lines?state=geo-locate" class="ui-btn-right refresh logged-in" data-role="button" data-icon="refresh" data-iconpos="right">Refresh</a>
     		<a href="#lines?state=login" class="ui-btn-right logged-out" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
     	</div>
     	<div class="content" data-role="content"></div>
     	<div class="logged-in hidden" data-role="footer" data-position="fixed">
     		<div data-role="navbar">
                 <ul>
-            		<li><a href="#lines" class="ui-btn-active">Main Menu</a></li>
-            		<li><a href="#freinds">Invite Friends</a></li>
+            		<li><a class="nav" href="#lines" data-direction="reverse" class="ui-btn-active">Main Menu</a></li>
+            		<li><a class="nav" href="#freinds">Invite Friends</a></li>
             	</ul>
             </div>
     	</div>
