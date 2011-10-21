@@ -4,9 +4,10 @@
     body = $(doc.body),
     utils = namespace.utils,
     templateCache = {},
+    pageHooks = {},
     
     wrapTemplate = function(html) {
-        var script = document.createElement('script');
+        var script = doc.createElement('script');
         script.type = 'text/x-jquery-tmpl'
         script.innerHTML = html;
         return $(script);
@@ -29,56 +30,74 @@
     },
     
     beforePageChange = function(event, data) {
-        var url = data.toPage, parts, hooks;
-        if ($.type(url) === 'string') {                
-            url = mobile.path.parseUrl(url);                
-            parts = getUrlParts(url);
-            data.options.dataUrl = url.href + parts.data.key;
-            if (parts.data.state) {
-                hooks = module.getStateHooks(parts.data.key, parts.data.state);
-            } 
-            if (hooks && hooks.length) {
-                $.when.apply($, $.map(hooks, function(hook){
-                    return hook(parts.page, parts.data);
-                })).then(function(){ 
-                    parts.page.page(); 
-                });
-            } else { 
-                parts.page.page(); 
-            }
-            mobile.changePage(parts.page, data);
-            frame.trigger('resize');
+        var url = data.toPage;
+        if ($.type(url) === 'string') {                                    
+            url = mobile.path.parseUrl(url);            
+            getPageFromUrl(url, function(page, selector, args) {
+                var hooks = module.getStateHooks(selector, args.state);                
+                if (hooks.length) {
+                    $.when($.map(hooks, function(hook){
+                        return hook(page, args);
+                    })).then(function(){ 
+                        page.page(); 
+                    });
+                } else { 
+                    page.page(); 
+                }
+                data.options.dataUrl = '/' + selector;
+                utils.log(data.options.dataUrl);
+                mobile.changePage(page, data.options);
+                frame.trigger('resize');
+            });
             event.preventDefault();
         }
     },
     
-    getUrlParts = function(url) { var 
-        parts = url.hash.split('?'), key = parts[0],
-        page = $(key), data = { key: key };
-        if (parts.length > 1) {
-            parts = parts[1].split('&');
-            $.each(parts, function(i, parts){
-                parts = parts.split('=');
-                data[decode(parts[0])] = decode(parts[1]);
-            });
+    getPageFromUrl = function(url, callback) { var 
+        parts = url.hash.split('?'), selector = parts[0],
+        page = $(selector), args = { state: 'init' },
+        id = selector.replace('#',''),
+        processPage = function(page) {
+            if (parts.length > 1) {
+                parts = parts[1].split('&');
+                $.each(parts, function(i, parts){
+                    parts = parts.split('=');
+                    args[decode(parts[0])] = decode(parts[1]);
+                });
+            }
+            callback(page.prependTo(body), selector, args);
+        };
+        if (!page.size()) {
+            module.render('page', { id: id }, processPage);
+        } else {
+            processPage(page);
         }
-        return { page: page, data: data };
     },
     
     module = namespace.extend('controller', {
         
-        addStateHook: function(page, state, hook, async) { 
-            var hooks = module.getStateHooks(page, state);
-            if (!async) { hook = utils.makeDeferred(hook); }
-            hooks.push(hook);
+        addStateHook: function(page, state, hook) {
+            if ($.isFunction(state)) {
+                hook = state; state = 'init';
+            }
+            hook = utils.makeDeferred(hook);
+            module.addAsyncStateHook(page, state, hook);
         },
         
-        getStateHooks: function(page, state, hooks) {
-            page = $(page); var 
-            pageHooks = page.data('hooks') || {},
-            hooks = utils.ensureArray(pageHooks, state);
-            page.data('hooks', pageHooks);
-            return hooks;
+        addAsyncStateHook: function(page, state, hook) {
+            if ($.isFunction(state)) {
+                hook = state; state = 'init';
+            }
+            var states = $.isArray(state) ? state : [state]; 
+            $.each(states, function(hooks, state){
+                module.getStateHooks(page, state).push(hook);
+            });
+        },
+        
+        getStateHooks: function(page, state) { var 
+            hooks = utils.ensureObject(pageHooks, page),
+            stateHooks = utils.ensureArray(hooks, state);
+            return stateHooks;
         },
         
         showLoader: function(msg) {

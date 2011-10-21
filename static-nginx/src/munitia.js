@@ -2,6 +2,12 @@
     
      module = global.munitia = {
     
+        main: function(domain) {
+            $.getScript('/conf/'+domain+'.js', function(){
+                $(munitia.session.start);
+            });
+        },
+    
         extend: function(name, submodule) {
             return module[name] = submodule;
         },
@@ -9,11 +15,10 @@
         utils: {
             
             makeDeferred: function(fn) {
-                var deferred = new $.Deferred()
-                return function() {
-                    fn.apply(null, $.makeArray(arguments)); 
-                    deferred.resolve();
-                    return deferred.promise();
+                return function() { var 
+                    args = $.makeArray(arguments),
+                    response = fn.apply(null, args); 
+                    return $.Deferred().resolve(response);
                 };
             },
             
@@ -27,6 +32,13 @@
                 } else if(!$.isArray(obj[prop])) {
                     obj[prop] = [obj[prop]];
                 }    
+                return obj[prop];
+            },
+            
+            ensureObject: function(obj, prop) {
+                if (!obj.hasOwnProperty(prop)) {
+                    obj[prop] = {};
+                }
                 return obj[prop];
             },
             

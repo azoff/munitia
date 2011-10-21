@@ -7,7 +7,12 @@
         
         start: function() {
             event.subscribe('auth.statusChange', module.onUpdate);            
-            fb.init({ appId: namespace.settings.fbAppId, oauth: true });
+            fb.init({ 
+                appId: namespace.settings.fbAppId, 
+                channelUrl: '/crossdomain.html',
+                oauth: true, 
+                status: true 
+            });
         },
         
         login: function() {
@@ -41,7 +46,7 @@
         },
         
         onLoggedOut: function(page) {
-            page.find('#content').empty();
+            page.find('.content').empty();
             $('.logged-out').removeClass('hidden');
             $('.logged-in').addClass('hidden');
         }

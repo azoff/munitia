@@ -18,13 +18,11 @@
         loadStops: function(page) { var
             notifier = new $.Deferred(),
             coords = session.user.getCoords(),
-            content = page.find('#content'),
+            content = page.find('.content'),
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading stops');
             namespace.api.get('find_stops_near', args).success(function(model){ 
                 module.renderStops(page, content, model, notifier); 
-            }).error(function(error){ 
-                module.renderError(content, 'Server Error: ' + error, notifier); 
             });
         },
         
@@ -33,7 +31,8 @@
             model = { stops: stopObjs };
             controller.render('stops', model, function(html){
                 if (html) {
-                    page.find('#header').html('Pick A Line')
+                    page.data('stops', stopObjs);
+                    page.find('.header').html('Pick A Line');
                     content.empty().append(html); 
                     html.filter('ul').listview();
                     controller.hideLoader();
@@ -42,17 +41,19 @@
             });
         },
         
-        renderError: function(content, error, notifier) {
-            controller.render(view, error, function(html){
-                content.empty().append(html);
-                controller.hideLoader();
-                notifier.resolve();
-            });
+        loadRound: function(page, data) { var 
+            stops = $('#lines').data('stops'),
+            stop = stops[data.stop],
+            line = stop.lines[data.line];
+            page.find('.back').removeClass('hidden').html('Lines');
+            page.find('.header').html(line.toString());
+            page.find('.content').html('here');
         }
         
     };
     
     controller.addStateHook('#lines', 'logged-in', module.geolocate);
-    controller.addStateHook('#lines', 'geo-located', module.loadStops, true);
+    controller.addAsyncStateHook('#lines', 'geo-located', module.loadStops);
+    controller.addStateHook('#round', module.loadRound);
     
 })(navigator.geolocation, munitia, jQuery);

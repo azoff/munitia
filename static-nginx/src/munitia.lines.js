@@ -41,6 +41,10 @@
     
     Line.prototype = {
         
+        toString: function() {
+            return this.prettyName();
+        },
+        
         prettyName: function() {
             var name = [this.shortName, this.prettyDirection()];
             if (this.longName.length) {
