@@ -1,8 +1,7 @@
 /*global require:true, console:true, process:true */
-require.paths.unshift(process.mainModule[0]);
 
 if (process.argv.length > 2) {
-	require('config').load(process.argv[2], 'utf-8', function(config){
+	require('config').load(process.argv[2], 'utf-8', function(config){     
 		require('database').connect(config, function(database){			
 			require('apiserver').start(config, database);
 		});
