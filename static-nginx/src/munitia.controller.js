@@ -32,7 +32,7 @@
     
     beforePageChange = function(event, data) {
         var url = data.toPage;
-        console.log(url, data.options);
+        utils.log(url, data.options);
         if ($.type(url) === 'string') {
             url = mobile.path.parseUrl(url);            
             getPageFromUrl(url, function(page, selector, args) { var 

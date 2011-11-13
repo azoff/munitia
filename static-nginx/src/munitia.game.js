@@ -16,17 +16,15 @@
         },
         
         loadStops: function(page) { var
-            notifier = new $.Deferred(),
             coords = session.user.getCoords(),
-            content = page.find('.content'),
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading stops');
             namespace.api.get('find_stops_near', args).success(function(model){ 
-                module.renderStops(page, content, model, notifier); 
+                module.renderStops(page, model); 
             });
         },
         
-        renderStops: function(page, content, model, notifier) { var
+        renderStops: function(page, model) { var
             stopObjs = stops.fromModels(model, stops.hasLineFilter),
             model = { stops: stopObjs };
             controller.render('stops', model, function(html){
@@ -34,21 +32,20 @@
                     page.data('stops', stopObjs);
                     page.find('.header').html('Pick A Line');
                     page.find('.refresh').removeClass('ui-btn-active');
-                    content.empty().append(html); 
+                    page.find('.content').empty().append(html); 
                     html.filter('ul').listview();
                     controller.hideLoader();
-                    notifier.resolve();
                 } else { renderError('Unable to load stops'); }
             });
         },
         
-        loadRound: function(page, data) { var 
+        loadRound: function(page, model) { var
             stops = $('#lines').data('stops'),
-            stop = stops[data.stop],
-            line = stop.lines[data.line];
-            page.find('.back:not(.ui-btn)').removeClass('hidden').html('Lines');
+            stop = stops[parseInt(model.stop, 10)],
+            line = stop.lines[parseInt(model.line, 10)];   
+            page.find('.ui-btn-left:not(.ui-btn)').removeClass('hidden').html('Lines');
             page.find('.header').html(line.toString());
-            page.find('.content').html(stop);
+            page.find('.content').html(stop.toString());
         }
         
     };

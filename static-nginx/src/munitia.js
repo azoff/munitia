@@ -43,21 +43,21 @@
             },
             
             dir: function() {
-                if (logger && module.settings.enableLogging) {
+                if (logger && module.settings &&  module.settings.enableLogging) {
                     var args = $.makeArray(arguments);
                     logger.dir.apply(logger, args);
                 }
             },
             
             log: function() {
-                if (logger && module.settings.enableLogging) {
+                if (logger && module.settings && module.settings.enableLogging) {
                     var args = $.makeArray(arguments);
                     logger.log.apply(logger, args);
                 }
             },
 
             error: function() {
-                if (logger && module.settings.enableLogging) {
+                if (logger && (!module.settings || module.settings.enableLogging)) {
                     var args = $.makeArray(arguments);
                     logger.error.apply(logger, args);
                 }
