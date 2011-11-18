@@ -1,16 +1,16 @@
-<div data-role="page">
-    <div data-role="header" data-position="inline">
-        <a class="ui-btn-left hidden" data-rel="back" data-role="button" data-icon="arrow-l" data-iconpos="left"></a>
+<div id="${id}" data-role="page">
+	<div data-role="header" data-position="inline">
+	    <a data-rel="back" data-direction="reverse" class="ui-btn-left back hidden" data-role="button" data-icon="arrow-l" data-iconpos="left"></a>
 	    <h1 class="header"></h1>
-	    <a  class="ui-btn-right hidden" data-role="button" data-icon="arrow-r" data-iconpos="right"></a>
-    </div>
-    <div class="content" data-role="content"></div>
-    <div data-role="footer" data-position="fixed">
-    	<div data-role="navbar">
+		<a class="ui-btn-right forward hidden" data-role="button" data-icon="arrow-r" data-iconpos="right"></a>
+	</div>
+	<div class="content" data-role="content"></div>
+	<div data-role="footer" data-position="fixed">
+		<div data-role="navbar">
             <ul>
-        		<li><a class="nav" href="#lines" data-direction="reverse">Lines</a></li>
-                <li><a class="nav" href="#invite">Invite</a></li>
-        		<li><a class="nav" href="#leaders">Leaderboards</a></li>
+        		<li><a class="nav" data-direction="reverse" href="#lines">Lines</a></li>
+                <li><a class="nav" data-direction="reverse" href="#invite">Invite</a></li>
+        		<li><a class="nav" data-direction="reverse" href="#leaders">Leaderboards</a></li>
         	</ul>
         </div>
 	</div>
