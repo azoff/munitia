@@ -1,5 +1,6 @@
 (function(geo, namespace, $){ var 
     api = namespace.api,   
+    utils = namespace.utils,   
     stops = namespace.stops, 
     session = namespace.session,
     controller = namespace.controller,
@@ -15,6 +16,14 @@
             });
         },
         
+        validateStop: function(stop) {
+            var valid = stop.hasLines();
+            if (!valid) {
+                utils.error('Invalid stop; ignoring because it does not have any lines:', stop);
+            }
+            return valid;
+        },
+        
         loadStops: function(page) { var
             coords = session.user.getCoords(),
             args = { lt: coords.latitude, lg: coords.longitude };
@@ -25,7 +34,7 @@
         },
         
         renderStops: function(page, model) { var
-            stopObjs = stops.fromModels(model, stops.hasLineFilter),
+            stopObjs = stops.fromModels(model, module.validateStop),
             model = { stops: stopObjs };
             controller.render('stops', model, function(html){
                 if (html) {
@@ -39,13 +48,30 @@
             });
         },
         
-        loadRound: function(page, model) { var
-            stops = $('#lines').data('stops'),
-            stop = stops[parseInt(model.stop, 10)],
-            line = stop.lines[parseInt(model.line, 10)];   
-            page.find('.ui-btn-left:not(.ui-btn)').removeClass('hidden').html('Lines');
+        loadRound: function(page, model) { var 
+            args = {}, 
+            stop, line,
+            stops = $('#lines').data('stops');
+            if (stops) {
+                stop = stops[parseInt(model.stop, 10)],
+                line = stop.lines[parseInt(model.line, 10)];
+                args.stretch_id = stop.getStretchId(line);
+                args.user_id = session.user.getUserId();
+                args.lt = stop.latitude;
+                args.lg = stop.longitude;
+                controller.showLoader('loading round');
+                namespace.api.get('add_to_round', args).success(function(model){ 
+                    module.renderRound(page, model);
+                });
+            }
+        },
+        
+        renderRound: function(page, model) {
+            console.log(page, model);
+            page.find('.back').removeClass('hidden').find('.ui-btn-text').html('Lines');
             page.find('.header').html(line.toString());
             page.find('.content').html(stop.toString());
+            controller.hideLoader();
         }
         
     };

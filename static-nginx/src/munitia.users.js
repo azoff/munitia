@@ -1,8 +1,8 @@
 (function(namespace, geo, $){
     
-    var module = namespace.extend('users', {
+    var module = namespace.users = {
         User: User  
-    });
+    };
     
     function User(model) {
         this._model = model;

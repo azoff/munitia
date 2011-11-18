@@ -8,10 +8,6 @@
             });
         },
     
-        extend: function(name, submodule) {
-            return module[name] = submodule;
-        },
-    
         utils: {
             
             makeDeferred: function(fn) {
@@ -42,22 +38,26 @@
                 return obj[prop];
             },
             
+            loggingEnabled: function() {
+                return logger && (!module.settings || module.settings.enableLogging);
+            },
+            
             dir: function() {
-                if (logger && module.settings &&  module.settings.enableLogging) {
+                if (module.utils.loggingEnabled()) {
                     var args = $.makeArray(arguments);
                     logger.dir.apply(logger, args);
                 }
             },
             
             log: function() {
-                if (logger && module.settings && module.settings.enableLogging) {
+                if (module.utils.loggingEnabled()) {
                     var args = $.makeArray(arguments);
                     logger.log.apply(logger, args);
                 }
             },
 
             error: function() {
-                if (logger && (!module.settings || module.settings.enableLogging)) {
+                if (module.utils.loggingEnabled()) {
                     var args = $.makeArray(arguments);
                     logger.error.apply(logger, args);
                 }

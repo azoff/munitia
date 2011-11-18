@@ -1,6 +1,6 @@
 (function(namespace, $){ 
     
-    var module = namespace.extend('lines', {
+    var module = namespace.lines = {
     
         DIRECTION_OUTBOUND: 1,
 
@@ -19,7 +19,7 @@
         fromUniqueId: function(id) {
             var parts = id.split(':');
             return module.fromModel({
-                routeId: parts[0],
+                id: parts[0],
                 shortName: parts[1],
                 longName: parts[2],
                 direction: parts[3]
@@ -30,10 +30,10 @@
             return new Line(model);
         }
         
-    });
+    };
     
     function Line(model) {
-        this.routeId   = parseInt(model.routeId, 10);
+        this.id        = model.id;
         this.direction = parseInt(model.direction, 10);
         this.shortName = $.trim(model.shortName).toUpperCase();
         this.longName  = $.trim(model.longName).toUpperCase();        

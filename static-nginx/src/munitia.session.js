@@ -1,9 +1,12 @@
 (function(global, namespace, fb, event, $){ var
     
+    monitor = $.Deferred(),
     controller = namespace.controller,
     users = namespace.users,
     
-    module = namespace.extend('session', {
+    module = namespace.session = {
+        
+        ready: $.proxy(monitor, 'done'), 
         
         start: function() {
             event.subscribe('auth.statusChange', module.onUpdate);            
@@ -13,19 +16,24 @@
                 oauth: true, 
                 status: true 
             });
+            monitor.resolve();
         },
         
         login: function() {
             if (!module.user) {
                 controller.showLoader('logging in');
-                fb.login(controller.hideLoader);     
+                module.ready(function(){
+                    fb.login(controller.hideLoader);
+                });                
             } else {
                 controller.changePage('#lines', { state: 'logged-in' });
             }
         },
         
         logout: function() {
-            fb.logout(controller.hideLoader);
+            module.ready(function(){
+                fb.logout(controller.hideLoader);
+            });
         },
         
         onUpdate: function(response) {
@@ -50,7 +58,7 @@
             $('.logged-in').addClass('hidden');
         }
         
-    });
+    };
     
     controller.addStateHook('#lines', 'login', module.login);
     controller.addStateHook('#lines', 'logout', module.logout);

@@ -1,7 +1,7 @@
 /*global jQuery, munitia */
 (function(namespace, $){ var 
     
-    module = namespace.extend('api', {
+    module = namespace.api = {
         
         execute: function(type, path, data) {
             var url = [namespace.settings.apiRoot, path].join('/');
@@ -24,6 +24,6 @@
             return module.execute('POST', key, data);
         }
         
-    });
+    };
     
 })(munitia, jQuery);

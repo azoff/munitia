@@ -78,7 +78,7 @@
         }
     },
     
-    module = namespace.extend('controller', {
+    module = namespace.controller = {
         
         addStateHook: function(page, state, hook) {
             if ($.isFunction(state)) {
@@ -126,7 +126,7 @@
             });
         }
         
-    });
+    };
     
     root.bind('pagebeforechange', beforePageChange);
     

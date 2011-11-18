@@ -1,6 +1,6 @@
-(function(namespace, $){
+(function(namespace, utils, $){
     
-    var module = namespace.extend('stops', {
+    var module = namespace.stops = {
     
         Stop: Stop,
     
@@ -20,15 +20,27 @@
             return new Stop(model);
         },
         
-        hasLineFilter: function(stop) {
-            return stop.hasLines();
+        parseNextStops: function(nextStops) {
+            var lines = {};
+            $.each(nextStops || [], function(i, nextStop){ var 
+                parts = nextStop.split(':'),
+                lineId = parts[0], stopId = parts[2],
+                direction = parseInt(parts[1], 10),
+                line = utils.ensureArray(lines, lineId);
+                line[direction] = stopId;
+            });
+            return lines;
         }
         
-    });
+    };
     
-    function Stop(model) {
+    function Stop(model) {        
+        this.id = model.stop_id;
         this.name = model.name;
+        this.latitude = model.loc[0];
+        this.longitude = model.loc[1];        
         this.lines = namespace.lines.fromUniqueIds(model.lines);
+        this.next = module.parseNextStops(model.next_stop);
     }
     
     Stop.prototype = {
@@ -39,8 +51,17 @@
         
         hasLines: function() {
             return this.lines.length > 0;
+        },
+        
+        getNextStopId: function(line) {
+            return this.next[line.id][line.direction];
+        },
+        
+        getStretchId: function(line) {
+            var nextId = this.getNextStopId(line);
+            return [this.id, line.id, nextId].join(':');
         }
         
     };
     
-})(munitia, jQuery);
+})(munitia, munitia.utils, jQuery);
