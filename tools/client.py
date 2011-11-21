@@ -11,6 +11,7 @@ import sys
 dry_run = False
 
 def hit_url(url):
+    global dry_run
     if dry_run:
         print url
         return None
@@ -36,7 +37,7 @@ class MunitiaClient():
         return hit_url(self.build_url('find_round?stretch_id=%s&lt=%s&lg=%s'%(args[0], args[1], args[2])))
 
     def add_to_round(self, args):
-        return hit_url(self.build_url('add_to_round?stretch_id=%s&lt=%s&lg=%s&user_id=%s'%(args[0], args[1], args[2], args[3])))
+        return hit_url(self.build_url('add_to_round?stretch_id=%s&lt=%s&lg=%s&user_id=%s&_=%s'%(args[0], args[1], args[2], args[3], args[4])))
     
     def find_stretch(self, args):
         return hit_url(self.build_url('find_stretch?start_stop_id=%s&end_stop_id=%s&line_id=%s'%(args[0], args[1], args[2])));
@@ -47,6 +48,17 @@ class MunitiaClient():
     def add_round_score_to_stretch(self, args):
         return hit_url(self.build_url('add_round_score_to_stretch?stretch_id=%s&round_id=%s&score=%s'%(args[0], args[1], args[2])))
 
+    def create_question(self, args):
+        return hit_url(self.build_url('create_question?lt=%s&lg=%s&question=%s&answers=%s'%(args[0], args[1], urllib2.quote(args[2]), urllib2.quote(json.dumps(args[3:])))))
+
+    def delete_question(self, args):
+        return hit_url(self.build_url('delete_question?id=%s'%(args[0])))
+
+    def find_questions_near(self, args):
+        return hit_url(self.build_url('find_questions_near?lt=%s&lg=%s'%(args[0], args[1])))
+
+    def delete_entry(self, args):
+        return hit_url(self.build_url('delete_entry?collection=%s&id=%s'%(args[0], args[1])))
 
 def execute_cmd(cmd_name, args):
     """Execute the specified client command with the specified arguments."""
@@ -59,6 +71,7 @@ def usage():
     print 'client.py cmd *arg1* *arg2* ...'
 
 def main():
+    global dry_run
     try:
         opts, args = getopt.getopt(sys.argv[1:], "d", [""])
     except getopt.GetoptError, err:
