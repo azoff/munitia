@@ -40,8 +40,10 @@
         this.lines = namespace.lines.fromUniqueIds(model.lines);
         this.next = module.parseNextStops(model.next_stop);
         if (model.loc && model.loc.length > 1) {
-            this.latitude = model.loc[0];
-            this.longitude = model.loc[1];
+            this.longitude = model.loc[0];
+            this.latitude = model.loc[1];            
+        } else {
+            utils.error('Missing loc info for stop!', model);
         }
     }
     
