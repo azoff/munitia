@@ -1,0 +1,11 @@
+<ul data-role="listview">
+    {{each(i, question) questions}}
+        <li data-role="list-divider">${question}</li>
+        {{each(j, answer) answers}}
+            <li>${answer}</li>
+        {{/each}}
+        {{if question != "Add question"}}
+            <li>+ add answer</li>
+        {{/if}}
+    {{/each}}
+</ul>

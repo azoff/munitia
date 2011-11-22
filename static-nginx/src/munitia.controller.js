@@ -120,7 +120,7 @@
         },
         
         render: function(view, model, callback) { 
-            loadTemplate(view, function(view) {                
+            loadTemplate(view, function(view) {
                 if (view) { callback(view.tmpl(model)); } 
                 else { callback(null); }
             });
