@@ -36,11 +36,13 @@
     
     function Stop(model) {        
         this.id = model.stop_id;
-        this.name = model.name;
-        this.latitude = model.loc[0];
-        this.longitude = model.loc[1];        
+        this.name = model.name;        
         this.lines = namespace.lines.fromUniqueIds(model.lines);
         this.next = module.parseNextStops(model.next_stop);
+        if (model.loc && model.loc.length > 1) {
+            this.latitude = model.loc[0];
+            this.longitude = model.loc[1];
+        }
     }
     
     Stop.prototype = {
