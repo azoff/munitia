@@ -4,10 +4,10 @@
     
         Stop: Stop,
     
-        fromModels: function(model, filter) {
+        fromModels: function(models, filter) {
             var stops = []; 
             filter = $.isFunction(filter) ? filter : $.noop;
-            $.each(model, function(i, model){
+            $.each(models, function(i, model){
                 var stop = module.fromModel(model)
                 if (filter(stop) !== false) {
                     stops.push(stop);

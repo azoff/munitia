@@ -34,7 +34,7 @@
         },
         
         renderStops: function(page, model) { var
-            stopObjs = stops.fromModels(model, module.validateStop),
+            stopObjs = stops.fromModels(model.data, module.validateStop),
             model = { stops: stopObjs };
             controller.render('stops', model, function(html){
                 if (html) {
