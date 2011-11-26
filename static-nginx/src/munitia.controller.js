@@ -32,16 +32,16 @@
     
     beforePageChange = function(event, data) {
         var url = data.toPage;
-        utils.log(url, data.options);
         if ($.type(url) === 'string') {
-            url = mobile.path.parseUrl(url);            
+            utils.log(url);            
+            url = mobile.path.parseUrl(url);
             getPageFromUrl(url, function(page, selector, args) { var 
                 hooks = module.getStateHooks(selector, args.state),
                 refresh = function(){ 
                     page.find('.nav[href=' + selector + ']').addClass('ui-btn-active');
                     data.options.dataUrl = (url.hrefNoHash || '/') + selector;                
                     mobile.changePage(page.page(), data.options);
-                    frame.trigger('resize'); 
+                    setTimeout($.proxy(frame, 'resize'), 500);
                 }; 
                 if (hooks.length) {
                     $.when($.map(hooks, function(hook){
@@ -50,7 +50,6 @@
                 } else { 
                     refresh();
                 }
-                
             });
             event.preventDefault();
         }
@@ -69,7 +68,7 @@
                     args[decode(parts[0])] = decode(parts[1]);
                 });
             }
-            callback(page.prependTo(body), selector, args);
+            callback(page.appendTo(body), selector, args);
         };
         if (!page.size()) {
             module.render('page', { id: id }, processPage);
@@ -81,14 +80,6 @@
     module = namespace.controller = {
         
         addStateHook: function(page, state, hook) {
-            if ($.isFunction(state)) {
-                hook = state; state = 'init';
-            }
-            hook = utils.makeDeferred(hook);
-            module.addAsyncStateHook(page, state, hook);
-        },
-        
-        addAsyncStateHook: function(page, state, hook) {
             if ($.isFunction(state)) {
                 hook = state; state = 'init';
             }

@@ -25,15 +25,17 @@
         },
         
         loadStops: function(page) { var
+            done = $.Deferred(),
             coords = session.user.getCoords(),
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading stops');
             namespace.api.get('find_stops_near', args).success(function(model){ 
-                module.renderStops(page, model); 
+                module.renderStops(page, model, done); 
             });
+            return done.promise();
         },
         
-        renderStops: function(page, model) { var
+        renderStops: function(page, model, done) { var
             stopObjs = stops.fromModels(model.data, module.validateStop),
             model = { stops: stopObjs };
             controller.render('stops', model, function(html){
@@ -44,7 +46,10 @@
                     page.find('.content').empty().append(html); 
                     html.filter('ul').listview();
                     controller.hideLoader();
-                } else { renderError('Unable to load stops'); }
+                    done.resolve();
+                } else { 
+                    renderError('Unable to load stops'); 
+                }
             });
         },
         
@@ -74,18 +79,18 @@
             controller.hideLoader();
         },
 
-	loadQuestions: function(page) { var
+        loadQuestions: function(page) { var
             coords = session.user.getCoords(),
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading questions');
             namespace.api.get('find_questions_near', args).success(function(model){ 
                 module.renderQuestions(page, model); 
             });
-	},
-	
-	renderQuestions: function(page, model) {
-	    questionObjs = model.data;
-	    questionObjs.push({question: "Add question", answers: []});
+        },
+
+        renderQuestions: function(page, model) {
+            var questionObjs = model.data;
+            questionObjs.push({question: "Add question", answers: []});
             model = { questions: questionObjs };
             controller.render('question', model, function(html){
                 if (html) {
@@ -95,14 +100,16 @@
                     page.find('.content').empty().append(html); 
                     html.filter('ul').listview();
                     controller.hideLoader();
-                } else { renderError('Unable to load questions'); }
+                } else { 
+                    renderError('Unable to load questions');
+                }
             });
-	}        
+    	}        
     };
     
     controller.addStateHook('#lines', ['logged-in', 'geo-locate'], module.geolocate);
-    controller.addAsyncStateHook('#lines', 'geo-located', module.loadStops);
+    controller.addStateHook('#lines', 'geo-located', module.loadStops);
     controller.addStateHook('#round', module.loadRound);
-    controller.addStateHook('#question', module.loadQuestions);
+    controller.addStateHook('#questions', module.loadQuestions);
     
 })(navigator.geolocation, munitia, jQuery);

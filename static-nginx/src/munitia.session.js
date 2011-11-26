@@ -2,6 +2,7 @@
     
     monitor = $.Deferred(),
     controller = namespace.controller,
+    utils = namespace.utils,
     users = namespace.users,
     
     module = namespace.session = {
@@ -56,6 +57,16 @@
             page.find('.content').empty();
             $('.logged-out').removeClass('hidden');
             $('.logged-in').addClass('hidden');
+        },
+        
+        showInviteModal: function() {
+            fb.ui({
+                method: 'apprequests',
+                message: 'Come play Munitia!'
+            }, function(response){
+                utils.log('Request', response.request, 'sent to', response.to.join(','), '...');
+                controller.changePage('#lines');
+            });
         }
         
     };
@@ -64,5 +75,6 @@
     controller.addStateHook('#lines', 'logout', module.logout);
     controller.addStateHook('#lines', 'logged-in', module.onLoggedIn);
     controller.addStateHook('#lines', 'logged-out', module.onLoggedOut);
+    controller.addStateHook('#invite', module.showInviteModal);
     
 })(window, munitia, FB, FB.Event, jQuery);
