@@ -59,12 +59,15 @@
             $('.logged-in').addClass('hidden');
         },
         
-        showInviteModal: function() {
+        showInviteModal: function(page) {
+            page.find('.back').removeClass('hidden').find('.ui-btn-text').html('Back');
             fb.ui({
                 method: 'apprequests',
                 message: 'Come play Munitia!'
             }, function(response){
-                utils.log('Request', response.request, 'sent to', response.to.join(','), '...');
+                if (response) {
+                    utils.log('Request', response.request, 'sent to', response.to.join(','), '...');
+                }
                 controller.changePage('#lines');
             });
         }
