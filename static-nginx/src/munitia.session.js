@@ -60,7 +60,10 @@
         },
         
         showInviteModal: function(page) {
-            page.find('.back').removeClass('hidden').find('.ui-btn-text').html('Back');
+            var back = page.find('.back');
+            if (back.hasClass('hidden')) {
+                back.removeClass('hidden').html('Back');
+            }
             fb.ui({
                 method: 'apprequests',
                 message: 'Come play Munitia!'

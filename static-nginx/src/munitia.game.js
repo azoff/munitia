@@ -66,13 +66,12 @@
                 args.lg = stop.longitude;
                 controller.showLoader('loading round');
                 namespace.api.get('add_to_round', args).success(function(model){ 
-                    module.renderRound(page, model);
+                    module.renderRound(page, stop, line, model);
                 });
             }
         },
 
-        renderRound: function(page, model) {
-            console.log(page, model);
+        renderRound: function(page, stop, line, model) {
             page.find('.back').removeClass('hidden').find('.ui-btn-text').html('Lines');
             page.find('.header').html(line.toString());
             page.find('.content').html(stop.toString());
