@@ -1,0 +1,15 @@
+<form method="post" id="new_question_form">
+<input type='hidden' name='lg' value=${lg} />
+<input type='hidden' name='lt' value=${lt} />
+<label for='question'>New question </label><input id='question' type='text' name='question' chars='25'><br/>
+<label for='answer0'>answer </label><input id='answer0' type='text' name='answer0' chars='25'><input type='checkbox' name='correct' value='0'/><br/>
+<label for='answer1'>answer </label><input id='answer1' type='text' name='answer1' chars='25'><input type='checkbox' name='correct' value='1'/><br/>
+<label for='answer2'>answer </label><input id='answer2' type='text' name='answer2' chars='25'><input type='checkbox' name='correct' value='2'/><br/>
+<label for='answer3'>answer </label><input id='answer3' type='text' name='answer3' chars='25'><input type='checkbox' name='correct' value='3'/><br/>
+<label for='answer4'>answer </label><input id='answer4' type='text' name='answer4' chars='25'><input type='checkbox' name='correct' value='4'/><br/>
+<label for='answer5'>answer </label><input id='answer5' type='text' name='answer5' chars='25'><input type='checkbox' name='correct' value='5'/><br/>
+<submit type="submit" value="Submit" />
+</form>
+<br/>
+<img src="http://maps.googleapis.com/maps/api/staticmap?center=${lt},${lg}&zoom=14&size=100x100&sensor=false&markers=color:orange%7Clabel:Q%7C${lt},${lg}"/>
+
