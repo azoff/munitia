@@ -7,6 +7,3 @@ api:
 static:
     type: static
     approot: static-nginx
-
-data:
-    type: mongodb
