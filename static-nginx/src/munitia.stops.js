@@ -21,13 +21,14 @@
         },
         
         parseNextStops: function(nextStops) {
-            var lines = {};
+            var lines = { exists: false };
             $.each(nextStops || [], function(i, nextStop){ var 
                 parts = nextStop.split(':'),
                 lineId = parts[0], stopId = parts[2],
                 direction = parseInt(parts[1], 10),
                 line = utils.ensureArray(lines, lineId);
                 line[direction] = stopId;
+	            lines.exists = true;
             });
             return lines;
         }
@@ -39,11 +40,15 @@
         this.name = model.name;        
         this.lines = namespace.lines.fromUniqueIds(model.lines);
         this.next = module.parseNextStops(model.next_stop);
-        if (model.loc && model.loc.length > 1) {
-            this.longitude = model.loc[0];
-            this.latitude = model.loc[1];            
+        if (this.next.exists) {
+	        if (model.loc && model.loc.length > 1) {
+		        this.longitude = model.loc[0];
+		        this.latitude = model.loc[1];
+	        } else {
+		        utils.error('Missing loc info for stop!', model);
+	        }
         } else {
-            utils.error('Missing loc info for stop!', model);
+	        utils.error('Missing next info for stop!', model);
         }
     }
     

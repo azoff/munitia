@@ -10,3 +10,8 @@ To run locally, you will need to provide an "environment.json" file as the only 
 You can then access the app at:
 
 `http://localhost:8080`
+
+To Do
+-----
+- Port node code to async
+- Port client code to modernizr

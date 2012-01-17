@@ -1,5 +1,5 @@
-(function(geo, namespace, $){ var 
-    api = namespace.api,   
+(function(geo, namespace, $){ var
+	api = namespace.api,
     utils = namespace.utils,   
     stops = namespace.stops, 
     session = namespace.session,
@@ -7,7 +7,7 @@
     
     module = namespace.game = {
         
-        geolocate: function(page) {
+        geolocate: function() {
             controller.showLoader('locating device');
             geo.getCurrentPosition(function(geo){
                 controller.hideLoader();
@@ -29,7 +29,7 @@
             coords = session.user.getCoords(),
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading stops');
-            namespace.api.get('find_stops_near', args).success(function(model){ 
+	        api.get('find_stops_near', args).success(function(model){
                 module.renderStops(page, model, done); 
             });
             return done.promise();
@@ -37,8 +37,8 @@
         
         renderStops: function(page, model, done) { var
             stopObjs = stops.fromModels(model.data, module.validateStop),
-            model = { stops: stopObjs };
-            controller.render('stops', model, function(html){
+            argmodel = { stops: stopObjs };
+            controller.render('stops', argmodel, function(html){
                 if (html) {
                     page.data('stops', stopObjs);
                     page.find('.header').html('Pick A Line');
@@ -54,19 +54,18 @@
         },
         
         loadRound: function(page, model) { var 
-            args = {}, 
-            stop, line,
+            args = {}, stop, line,
             stops = $('#lines').data('stops');
             if (stops) {
-                stop = stops[parseInt(model.stop, 10)],
+                stop = stops[parseInt(model.stop, 10)];
                 line = stop.lines[parseInt(model.line, 10)];
                 args.stretch_id = stop.getStretchId(line);
                 args.user_id = session.user.getUserId();
                 args.lt = stop.latitude;
                 args.lg = stop.longitude;
                 controller.showLoader('loading round');
-                namespace.api.get('add_to_round', args).success(function(){ 
-                    namespace.api.get('find_round', args).success(function(model){ 
+                api.get('add_to_round', args).success(function(){
+                    api.get('find_round', args).success(function(model){
                         module.renderRound(page, stop, line, model);
                     });
                 });
@@ -97,7 +96,7 @@
 		        }
 	        }
 	        if (!questions) {
-		        namespace.api.get('find_questions_near', findArgs).success(function(model){ 
+		        api.get('find_questions_near', findArgs).success(function(model){
 			        module.renderQuestions(page, model); 
 	            });
 	        }

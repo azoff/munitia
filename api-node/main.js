@@ -1,8 +1,8 @@
 /*global require:true, console:true, process:true */
 
 if (process.argv.length > 2) {
-	require('config').load(process.argv[2], 'utf-8', function(config){     
-		require('database').connect(config, function(database){			
+	require('config').load(process.argv[2], 'utf-8', function(config){
+		require('database').connect(config, function(database){
 			require('apiserver').start(config, database);
 		});
 	});
