@@ -60,6 +60,19 @@ class MunitiaClient():
     def delete_entry(self, args):
         return hit_url(self.build_url('delete_entry?collection=%s&id=%s'%(args[0], args[1])))
 
+    def create_user(self, args):
+        return hit_url(self.build_url('create_user?username=%s&email=%s&avatar_url=%s'%(args[0], urllib2.quote(args[1]), urllib2.quote(args[2]))))
+
+    def create_trivia_pack(self, args):
+        return hit_url(self.build_url('create_trivia_pack?user_id=%s&username=%s&pack_name=%s&lt=%s&lg=%s'%(args[0], args[1], urllib2.quote(args[2]), args[3], args[4])))
+
+    def find_trivia_packs_near(self, args):
+        return hit_url(self.build_url('find_trivia_packs_near?lt=%s&lg=%s'%(args[0], args[1])))
+
+    def find_trivia_packs_by_owner(self, args):
+        return hit_url(self.build_url('find_trivia_packs_by_owner?user_id=%s&lt=%s&lg=%s'%(args[0], args[1], args[2])))
+                      
+
 def execute_cmd(cmd_name, args):
     """Execute the specified client command with the specified arguments."""
     method = getattr(MunitiaClient, cmd_name, None)
