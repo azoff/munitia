@@ -81,6 +81,32 @@
             controller.hideLoader();
         },
 
+        showQuestionsMap: function(page, args) {
+            var done = $.Deferred();
+			controller.showLoader('showing questions');
+			controller.render('questions', {}, function(html) {
+					if (html) {
+						console.log('found? ' + page.find('.ui-footer').length)
+						var footerHeight = page.find('.ui-footer').height();
+						console.log('footerHeight=' + footerHeight);
+						var headerHeight = page.find('.ui-header').height();
+						console.log('headerHeight=' + headerHeight);
+						console.log('page.height()=' + page.height());
+						var canvasHeight = page.height() - (headerHeight + canvasHeight);
+						console.log(html);
+						page.find('.content').empty().append(html); 
+						console.log('canvasHeight = ' + canvasHeight);
+						page.find('#map_canvas').height(page.height());
+						initializeQuestionsMap(done);
+					} else {
+						renderError('error showing questions');
+						controller.hideLoader();
+						done.fail();
+					}
+				});
+			return done.promise();
+		},
+
 	    loadQuestions: function(page, args) { 
 	        var coords = session.user.getCoords(),
             findArgs = { lt: coords.latitude, lg: coords.longitude },
@@ -151,13 +177,12 @@
                     renderError('Unable to load questions');
                 }
             });
-        }        
-    
+        },
     };
     
     controller.addStateHook('#lines', ['logged-in', 'geo-locate'], module.geolocate);
     controller.addStateHook('#lines', 'geo-located', module.loadStops);
     controller.addStateHook('#round', module.loadRound);
-    controller.addStateHook('#questions', module.loadQuestions);
+    controller.addStateHook('#questions', module.showQuestionsMap);
     
 })(navigator.geolocation, munitia, jQuery);
