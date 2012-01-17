@@ -4,6 +4,7 @@
     
         main: function(domain) {
             $.getScript('/conf/'+domain+'.js', function(){
+	            module.settings.remoteDebugger(global.navigator.userAgent);
                 $(munitia.session.start);
             });
         },
