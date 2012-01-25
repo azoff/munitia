@@ -1,15 +1,9 @@
 <ul data-role="listview">
     {{each(i, q) questions}}
-        {{if q.question != "Add question"}}
-            <li data-role><a href="#questions?cmd=new_question">+ Add question</a></li>
-	{{else}}
-            <li data-role="list-divider">${question}</li>
-	{{/if}}
+        <li data-role="list-divider" style="height: 100px">${question}<br><img height="100px" style="left: 150px; top: 25px" src="${img_url}"><img src="http://maps.googleapis.com/maps/api/staticmap?center=${loc[1]},${loc[0]}&zoom=16&size=100x100&sensor=false&markers=color:orange%7Clabel:Q%7C${loc[1]},${loc[0]}"/>
+</li>
         {{each(j, answer) answers}}
             <li>${answer}</li>
         {{/each}}
-        {{if question != "Add question"}}
-            <li><a href="#questions?cmd=new_answer&id=${_id}">+ add answer</li>
-        {{/if}}
     {{/each}}
 </ul>

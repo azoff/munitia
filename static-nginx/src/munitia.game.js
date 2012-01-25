@@ -60,15 +60,38 @@
                 stop = stops[parseInt(model.stop, 10)];
                 line = stop.lines[parseInt(model.line, 10)];
                 args.stretch_id = stop.getStretchId(line);
-                args.user_id = session.user.getUserId();
-                args.lt = stop.latitude;
-                args.lg = stop.longitude;
+                // NOTE(tracy): Not sure we still need lt/lg for a round? I think we can just rely on
+                // stretch_id and not finished for now. Fix this later with quantams, etc.
+                // args.user_id = session.user.getUserId();
+                // args.lt = stop.latitude;
+                // args.lg = stop.longitude;
                 controller.showLoader('loading round');
-                api.get('add_to_round', args).success(function(){
-                    api.get('find_round', args).success(function(model){
-                        module.renderRound(page, stop, line, model);
+                api.get('find_round', args).success(function(find_response) {
+                        console.log('find_round response ' + JSON.stringify(find_response));
+                        if (find_response.hasOwnProperty('data') && find_response.data.length > 0) {
+                            console.log('found round');
+                            var add_to_round_args = {round_id: find_response.data[0]._id, user_id: session.user.getUserId()};
+                            api.get('add_to_round', add_to_round_args).success(function(add_to_round_response) {
+                                    // TODO(tracy): handle error
+                                    console.log('add_to_round response: ' + JSON.stringify(add_to_round_response));
+                                    // module.renderRound(page, stop, line, model);
+                                    module.loadQuestions(page, []);
+                                });
+                        } else {
+                            console.log('did not find round, creating one');
+                            create_args = { stretch_id: args.stretch_id }
+                            api.get('create_round', create_args).success(function(create_response) {
+                                    console.log('create round response ' + JSON.stringify(create_response));
+                                    var add_to_round_args = {_id: create_response.data[0]._id, user_id: session.user.getUserId()};
+                                    api.get('add_to_round', add_to_round_args).success(function(add_to_round_response) {
+                                            // TODO(tracy): handle error
+                                            console.log('add_to_round response: ' + JSON.stringify(add_to_round_response));
+                                            //module.renderRound(page, stop, line, model);
+                                            module.loadQuestions(page, []);
+                                        });
+                                });
+                        }
                     });
-                });
             }
         },
 
@@ -162,7 +185,7 @@
 
         renderQuestions: function(page, model) {
             var questionObjs = model.data;
-            questionObjs.push({question: 'Add question', answers: []});
+            console.log('questions ' + JSON.stringify(questionObjs));
             model = { questions: questionObjs };
             controller.render('question', model, function(html){
                 if (html) {
