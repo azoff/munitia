@@ -6,6 +6,8 @@
     controller = namespace.controller,
     
     module = namespace.game = {
+
+        questions: [],
         
         geolocate: function() {
             controller.showLoader('locating device');
@@ -19,7 +21,7 @@
         validateStop: function(stop) {
             var valid = stop.hasLines();
             if (!valid) {
-                utils.error('Invalid stop; ignoring because it does not have any lines:', stop);
+                utils.error('Invalid stop; ignoring because it does not have any lines:', stop.id);
             }
             return valid;
         },
@@ -48,59 +50,86 @@
                     controller.hideLoader();
                     done.resolve();
                 } else { 
-                    renderError('Unable to load stops'); 
+                    utils.error('Unable to load stops');
                 }
             });
         },
         
         loadRound: function(page, model) { var 
-            args = {}, stop, line,
+            args = {}, stop, line, done = $.Deferred(),
             stops = $('#lines').data('stops');
             if (stops) {
                 stop = stops[parseInt(model.stop, 10)];
                 line = stop.lines[parseInt(model.line, 10)];
                 args.stretch_id = stop.getStretchId(line);
-                // NOTE(tracy): Not sure we still need lt/lg for a round? I think we can just rely on
-                // stretch_id and not finished for now. Fix this later with quantams, etc.
-                // args.user_id = session.user.getUserId();
-                // args.lt = stop.latitude;
-                // args.lg = stop.longitude;
-                controller.showLoader('loading round');
-                api.get('find_round', args).success(function(find_response) {
-                        console.log('find_round response ' + JSON.stringify(find_response));
-                        if (find_response.hasOwnProperty('data') && find_response.data.length > 0) {
-                            console.log('found round');
-                            var add_to_round_args = {round_id: find_response.data[0]._id, user_id: session.user.getUserId()};
-                            api.get('add_to_round', add_to_round_args).success(function(add_to_round_response) {
-                                    // TODO(tracy): handle error
-                                    console.log('add_to_round response: ' + JSON.stringify(add_to_round_response));
-                                    // module.renderRound(page, stop, line, model);
-                                    module.loadQuestions(page, []);
-                                });
-                        } else {
-                            console.log('did not find round, creating one');
-                            create_args = { stretch_id: args.stretch_id }
-                            api.get('create_round', create_args).success(function(create_response) {
-                                    console.log('create round response ' + JSON.stringify(create_response));
-                                    var add_to_round_args = {_id: create_response.data[0]._id, user_id: session.user.getUserId()};
-                                    api.get('add_to_round', add_to_round_args).success(function(add_to_round_response) {
-                                            // TODO(tracy): handle error
-                                            console.log('add_to_round response: ' + JSON.stringify(add_to_round_response));
-                                            //module.renderRound(page, stop, line, model);
-                                            module.loadQuestions(page, []);
-                                        });
-                                });
-                        }
-                    });
+                page.find('.header').html(line.prettyName());
+                api.get('find_round', args).success(function(round) {
+                    if (round && round.data && round.data.length) {
+                        module.addToRound(page, round, done);
+                    } else {
+                        api.get('create_round', args).success(function(){
+                            module.addToRound(page, round, done);
+                        });
+                    }
+                });
+            }
+            return done.promise();
+        },
+
+        addToRound: function(page, round, done) {
+            if (round && round.data && round.data.length) {
+                var args = { round_id: round.data[0]._id, user_id: session.user.getUserId() };
+                api.get('add_to_round', args).success(function(round) {
+                    if (round.status === 200) {
+                        module.loadQuestions(page, done);
+                    } else {
+                        utils.error('Unable to add to round', round);
+                    }
+                });
+            } else {
+                utils.error('Unable to add to round', round);
             }
         },
 
-        renderRound: function(page, stop, line, model) {
-            page.find('.back').removeClass('hidden').find('.ui-btn-text').html('Lines');
-            page.find('.header').html(line.toString());
-            page.find('.content').html(stop.toString());
-            console.log(model);
-            controller.hideLoader();
+        loadQuestions: function(page, done) {
+            var coords = session.user.getCoords(),
+            args = { lt: coords.latitude, lg: coords.longitude };
+            controller.showLoader('loading questions');
+            if (module.questions.length) {
+                module.renderNewQuestion(page, done);
+            } else {
+                api.get('find_questions_near', args).success(function(questions){
+                    if (questions && questions.data && questions.data.length) {
+                        module.questions = questions.data;
+                        module.renderNewQuestion(page, done);
+                    } else {
+                        utils.error('Unable to load questions:', questions);
+                    }
+                });
+            }
+        },
+
+        renderNewQuestion: function(page, done) {
+            var question = module.questions.shift(), answers = [];
+            controller.showLoader('rendering question');
+            if (!question.correct) { // convert the answer map to a random array
+                question.correct = utils.answersToArray(answers, question.answers);
+                question.answers = answers;
+            }
+            controller.render('question', question, function(html) {
+                if (html) {
+                    page.data('question', question);
+                    page.find('.content').empty().append(html);
+                    // only call list view if the page is already initialized
+                    if (page.hasClass('ui-page')) {
+                        html.find('.answers').listview();
+                    }
+                    controller.hideLoader();
+                    done.resolve();
+                } else {
+                    utils.error('Unable to render new_question form');
+                }
+            });
         },
 
         showQuestionsMap: function(page, args) {
@@ -121,85 +150,14 @@
 						page.find('#map_canvas').height(page.height());
 						initializeQuestionsMap(done);
 					} else {
-						renderError('error showing questions');
+                        utils.error('error showing questions');
 						controller.hideLoader();
 						done.fail();
 					}
 				});
 			return done.promise();
-		},
+		}
 
-	    loadQuestions: function(page, args) { 
-	        var coords = session.user.getCoords(),
-            findArgs = { lt: coords.latitude, lg: coords.longitude },
-            questions = page.data('questions');
-            controller.showLoader('loading questions');	        
-	        if ("cmd" in args) {
-		        if (args.cmd == 'new_question') {
-		            module.renderNewQuestion(page);
-		            return;
-		        } else if (args.cmd == 'view_question') {
-		            // TODO(tracy): IMPLEMENT THIS.
-		            module.renderSingleQuestion(page, args);
-		            return;
-		        }
-	        }
-	        if (!questions) {
-		        api.get('find_questions_near', findArgs).success(function(model){
-			        module.renderQuestions(page, model); 
-	            });
-	        }
-	    },
-	
-	    renderNewQuestion: function(page) {
-	        var coords = session.user.getCoords(),
-            geoArgs = { lt: coords.latitude, lg: coords.longitude };
-	        controller.render('new_question', geoArgs, function(html) {
-		        if (html) {
-			        page.find('.header').html('New Question');
-			        page.find('.refresh').removeClass('ui-btn-active');
-			        page.find('.content').empty().append(html); 
-			        html.filter('ul').listview();
-			        var new_question_form = $('#new_question_form');
-			        new_question_form.submit(function(event) {
-				        var form_data = new_question_form.serialize();
-				        $.post('/create_new_question', form_data, function(response) {
-					        if ("status" in response) {
-					            if (response.status == 200) {
-				        		    page.data('questions', ''); // clear old questions
-				        		    module.loadQuestions();
-					            } else {
-				        		    renderError('Server error: ' + JSON.stringify(response));
-					            }
-					        } else {
-					            renderError('Malformed server response: ' + JSON.stringify(response));
-					        }
-			            });
-		            });
-			        controller.hideLoader();
-		        } else { 
-                    renderError('Unable to render new_question form'); 
-                }
-		    });
-	    },
-
-        renderQuestions: function(page, model) {
-            var questionObjs = model.data;
-            console.log('questions ' + JSON.stringify(questionObjs));
-            model = { questions: questionObjs };
-            controller.render('question', model, function(html){
-                if (html) {
-                    page.data('questions', questionObjs);
-                    page.find('.header').html('Questions');
-                    page.find('.refresh').removeClass('ui-btn-active');
-                    page.find('.content').empty().append(html); 
-                    html.filter('ul').listview();
-                    controller.hideLoader();
-                } else { 
-                    renderError('Unable to load questions');
-                }
-            });
-        },
     };
     
     controller.addStateHook('#lines', ['logged-in', 'geo-locate'], module.geolocate);

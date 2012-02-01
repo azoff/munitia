@@ -1,4 +1,4 @@
-(function(global, logger, $){ var 
+(function(global, logger, $, math){ var
     
      module = global.munitia = {
     
@@ -30,6 +30,20 @@
                     obj[prop] = [obj[prop]];
                 }    
                 return obj[prop];
+            },
+
+            randomSort: function() {
+                return math.round(math.random()) - 0.5;
+            },
+
+            // converts the answer map to a random answer array
+            // returns the index of the correct answer
+            answersToArray: function(answers, map) {
+                $.each(map, function(key, value){
+                    if (value) { answers.push(value); }
+                });
+                answers.sort(module.utils.randomSort);
+                return answers.indexOf(map.correct);
             },
             
             ensureObject: function(obj, prop) {
@@ -70,4 +84,4 @@
     
     global.trace = module.utils.log;
     
-})(window, window.console, jQuery);
+})(window, window.console, jQuery, Math);

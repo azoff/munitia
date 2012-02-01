@@ -1,10 +1,13 @@
 /*global jQuery, munitia */
 (function(namespace, $){ var 
-    
+
+    utils = namespace.utils,
+
     module = namespace.api = {
         
         execute: function(type, path, data) {
             var url = [namespace.settings.apiRoot, path].join('/');
+            utils.log(url, data);
             return $.ajax({
                 url: url, 
                 data: data, 
