@@ -67,7 +67,7 @@ function placeMarker(location) {
   map.setCenter(location);
 
   var infowindow = new google.maps.InfoWindow(
-      { content: "<form name='add_question' method='get' action='http://localhost:8080/create_question'>Question<br><input type='text' name='question' width='35'><br>Correct answer<br><input type='text' name='correct' width='35'><br>Wrong answer<br><input type='text' name='wrong0' width='35'><br>Wrong answer<br><input type='text' name='wrong1' width='35'><br>Wrong answer<br><input type='text' name='wrong2' width='35'><br><input type='submit' name='Save' value='Save'><input type='hidden' name='lt' value='" + marker.getPosition().lat() + "'> <input type='hidden' name='lg' value='" + marker.getPosition().lng() + "'></form>",
+      { content: "<form name='add_question' method='get' action='http://api.munitia.com:8080/create_question'>Question<br><input type='text' name='question' width='35'><br>Correct answer<br><input type='text' name='correct' width='35'><br>Wrong answer<br><input type='text' name='wrong0' width='35'><br>Wrong answer<br><input type='text' name='wrong1' width='35'><br>Wrong answer<br><input type='text' name='wrong2' width='35'><br><input type='submit' name='Save' value='Save'><input type='hidden' name='lt' value='" + marker.getPosition().lat() + "'> <input type='hidden' name='lg' value='" + marker.getPosition().lng() + "'></form>",
         size: new google.maps.Size(50, 50)
       });
     google.maps.event.addListener(marker, 'click', function() {
