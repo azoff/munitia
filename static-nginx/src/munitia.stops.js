@@ -45,10 +45,10 @@
 		        this.longitude = model.loc[0];
 		        this.latitude = model.loc[1];
 	        } else {
-		        utils.error('Missing loc info for stop!', model);
+		        utils.error('Missing loc info for stop!', model._id);
 	        }
         } else {
-	        utils.error('Missing next info for stop!', model);
+	        utils.error('Missing next info for stop!', model._id);
         }
     }
     

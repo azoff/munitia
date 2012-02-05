@@ -29,24 +29,29 @@
             });
         }
     },
+
+    hookExecutor = function(page, args) {
+        return function(hook){
+            return hook(page, args);
+        };
+    },
     
     beforePageChange = function(event, data) {
         var url = data.toPage;
         if ($.type(url) === 'string') {
-            utils.log(url);            
             url = mobile.path.parseUrl(url);
-            getPageFromUrl(url, function(page, selector, args) { var 
-                hooks = module.getStateHooks(selector, args.state),
+            getPageFromUrl(url, function(page, selector, args) {
+                utils.log(selector, args);
+                var hooks = module.getStateHooks(selector, args.state),
                 refresh = function(){ 
                     page.find('.nav[href=' + selector + ']').addClass('ui-btn-active');
                     data.options.dataUrl = (url.hrefNoHash || '/') + selector;                
                     mobile.changePage(page.page(), data.options);
                     setTimeout($.proxy(frame, 'resize'), 500);
-                }; 
+                };
                 if (hooks.length) {
-                    $.when($.map(hooks, function(hook){
-                        return hook(page, args);
-                    })).then(refresh);
+                    hooks = $.map(hooks, hookExecutor(page, args));
+                    $.when.apply($, hooks).then(refresh);
                 } else { 
                     refresh();
                 }
@@ -89,10 +94,9 @@
             });
         },
         
-        getStateHooks: function(page, state) { var 
-            hooks = utils.ensureObject(pageHooks, page),
-            stateHooks = utils.ensureArray(hooks, state);
-            return stateHooks;
+        getStateHooks: function(page, state) {
+            var hooks = utils.ensureObject(pageHooks, page);
+            return utils.ensureArray(hooks, state);
         },
         
         showLoader: function(msg) {

@@ -1,9 +1,11 @@
-<ul data-role="listview">
-    {{each(i, q) questions}}
-        <li data-role="list-divider" style="height: 100px">${question}<br><img height="100px" style="left: 150px; top: 25px" src="${img_url}"><img src="http://maps.googleapis.com/maps/api/staticmap?center=${loc[1]},${loc[0]}&zoom=16&size=100x100&sensor=false&markers=color:orange%7Clabel:Q%7C${loc[1]},${loc[0]}"/>
-</li>
-        {{each(j, answer) answers}}
-            <li>${answer}</li>
+<div class="question">
+    <h3>${question}</h3>
+    {{if img_url}}
+        <img alt="loading image..." src="${img_url}" />
+    {{/if}}
+    <ul class="answers" data-role="listview">
+        {{each(i, answer) answers}}
+            <li><a href="#answer?selection=${i}">${answer}</a></li>
         {{/each}}
-    {{/each}}
-</ul>
+    </ul>
+</div>
