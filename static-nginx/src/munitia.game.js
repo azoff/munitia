@@ -3,8 +3,9 @@
     utils = namespace.utils,   
     stops = namespace.stops, 
     session = namespace.session,
+    triviaimport = namespace.triviaimport,
     controller = namespace.controller,
-    
+       
     module = namespace.game = {
         
         geolocate: function() {
@@ -22,6 +23,27 @@
                 utils.error('Invalid stop; ignoring because it does not have any lines:', stop);
             }
             return valid;
+        },
+
+        // present a username/password login form.
+        loginForm: function(page) {
+            model = { };
+            console.error('loginForm');
+            controller.render('login_form', model, function(html){
+                if (html) {
+                    //console.error('login_form ' + JSON.stringify(html));
+                    page.find('.header').html('Login');
+                    page.find('.refresh').removeClass('ui-btn-active');
+                    page.find('.content').empty().append(html); 
+                    $('#username').textinput();
+                    $('#password').textinput();
+                    $('#login_submit').button();
+                    munitia.triviaimport.enableChromeExtensionLoginForm(controller);
+                    controller.hideLoader();
+                } else { 
+                    renderError('Unable to render login form.');
+                }
+            });
         },
         
         loadStops: function(page) { var
@@ -200,11 +222,31 @@
                 }
             });
         },
+
+        triviaImport: function(page) {
+            args = {};
+            controller.hideLoader();  //NOTE: tracy
+            controller.render('triviaimport', args, function(html) {
+                    if (html) { 
+                        console.error(html);
+                        page.find('.header').html('Trivia Import');
+                        page.find('.refresh').removeClass('ui-btn-active');
+                        page.find('.content').empty().append(html);
+                        // call initialize to set up search form submit handler
+                        triviaimport.initializeTriviaImport();
+                        $('#triviaimport').trigger("create");
+                    } else {
+                        renderError('Error rendering trivia import');
+                    }
+                });
+        },
     };
     
     controller.addStateHook('#lines', ['logged-in', 'geo-locate'], module.geolocate);
     controller.addStateHook('#lines', 'geo-located', module.loadStops);
     controller.addStateHook('#round', module.loadRound);
     controller.addStateHook('#questions', module.showQuestionsMap);
+    controller.addStateHook('#triviaimport', module.triviaImport);
+    controller.addStateHook('#loginform', module.loginForm);
     
 })(navigator.geolocation, munitia, jQuery);

@@ -22,6 +22,13 @@
         
         login: function() {
             if (!module.user) {
+                if (window.location.protocol == 'chrome-extension:') {
+                    module.user = new users.User({user_id: 1, name: 'tracy', avatar_img: 'https://plus.google.com/104770262832706227353'});
+                    $('.logged-in').removeClass('hidden');
+                    $('.logged-out').addClass('hidden');
+                    controller.changePage('#loginform', { changeHash: false, transition: 'pop'});
+                    return;
+                }
                 controller.showLoader('logging in');
                 module.ready(function(){
                     fb.login(controller.hideLoader);
@@ -38,7 +45,7 @@
         },
         
         onUpdate: function(response) {
-            var model = response.authResponse;          
+            var model = response.authResponse;
             if (model && !module.user) {
                 module.user = new users.User(model);
                 controller.changePage('#lines', { state: 'logged-in' });

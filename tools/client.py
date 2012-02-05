@@ -71,6 +71,12 @@ class MunitiaClient():
 
     def find_trivia_packs_by_owner(self, args):
         return hit_url(self.build_url('find_trivia_packs_by_owner?user_id=%s&lt=%s&lg=%s'%(args[0], args[1], args[2])))
+
+    def flickr_search(self, args):
+        return hit_url(self.build_url('flickr_search?lt=%s&lg=%s&radius=%s&search_term=%s'%(args[0], args[1], args[2], urllib2.quote(args[3]))));
+
+    def google_places_search(self, args):
+        return hit_url(self.build_url('google_places_search?lt=%s&lg=%s&radius=%s&search_term=%s'%(args[0], args[1], args[2], urllib2.quote(args[3]))))
                       
 
 def execute_cmd(cmd_name, args):
