@@ -40,16 +40,17 @@
                     console.log(geo);
                     session.user.setGeo(geo);
                     module.gpsPointCount += 1;
+                    // NOTE(tracy): For now, only gps log while on the geotest page.
                     if (currentPageId == "geotest") {
                         controller.changePage('#geotest');
+                        // log it via the api.
+                        // TODO(tracy): check these values on the mobile client.  laptop is just lt/lg
+                        var args = {lt: geo.coords.latitude, lg: geo.coords.longitude, user_id: session.user.getUserId(),
+                                    accuracy: geo.coords.accuracy, name: module.gpsTrackName};
+                        api.get('gps_log', args).success(function(response){
+                                console.log(response);
+                            });
                     }
-                    // log it via the api.
-                    // TODO(tracy): check these values on the mobile client.  laptop is just lt/lg
-                    var args = {lt: geo.coords.latitude, lg: geo.coords.longitude, user_id: session.user.getUserId(),
-                                accuracy: geo.coords.accuracy, name: module.gpsTrackName};
-                    api.get('gps_log', args).success(function(response){
-                            console.log(response);
-                        });
                 });
         },
         
