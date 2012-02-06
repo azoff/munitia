@@ -1,13 +1,75 @@
-    Search terms
+<div data-role="fieldcontainer">
     <form method="get" action="/" name="searchform" id="searchform">
-    <input type="text" name="search" width="30" id="searchval" />
+    <label for="search">Search:</label>
+    <input type="search" name="search" width="30" id="searchval" />
     <input type="submit" name="search_submit" value="Search" />
     </form>
-    <form method='get' id='newquestion_form' name='newquestion' action='http://munitia.com:8080/create_question'>
+</div>
+    <form method='get' id='newquestion_form' name='newquestion' action='${api_server}/create_question'>
         <!-- flickr photos -->
+        <div data-role="fieldcontainer">
+        <label for="search_flickr">Search Flickr</label>
+        <input type="search" name="search_flickr" width="30" id="search_flickr" />
+        <input type="submit" id="search_flickr_submit" value="Search Flickr" />
+        </div>
         <div id="flickr_photos_content"></div>
         <!-- google places data -->
+        <div data-role="fieldcontainer">
+        <label for="search_google_places">Search Google Places</label>
+        <input type="search" name="search_google_places" width="30" id="search_google_places" />
+        <input type="submit" id="search_google_places_submit" value="Search Google Places" />
+        </div>
         <div id="google_places_content"></div>
+        <!-- wikipedia data -->
+        <div data-role="fieldcontainer">
+        <label for="search_wikipedia">Search Wikipedia</label>
+        <input type="search" name="search_wikipedia" width="30" id="search_wikipedia" />
+        <input type="submit" id="search_wikipedia_submit" value="Search Wikipedia" />
+        </div>
+        <div id="wikipedia_content"></div>
+
+        <div data-role="fieldcontainer">
+        <label for='question'>Question</label>
+        <input type='text' id='question' name='question' value='What building is this?'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='correct'>Correct</label>
+        <input type='text' id='correct' name='correct'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='wrong0'>Wrong</label>
+        <input type='text' id='wrong0' name='wrong0'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='wrong1'>Wrong</label>
+        <input type='text' id='wrong1' name='wrong1'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='wrong2'>Wrong</label>
+        <input type='text' id='wrong2' name='wrong2'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='lt'>Latitude</label>
+        <input type='text' id='lt' name='lt'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='lg'>Longitude</label>
+        <input type='text' id='lg' name='lg'/>
+        </div>
+
+        <div data-role="fieldcontainer">
+        <label for='didyouknow'>Did You Know?</label>
+        <textarea id='didyouknow' name='didyouknow'/>
+        </div>
+        
+        <input type='submit' name='submit_question' id='submit_question' value='Add question'/>
+
     </form>
 
 

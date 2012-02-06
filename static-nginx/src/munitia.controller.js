@@ -35,7 +35,6 @@
             return hook(page, args);
         };
     },
-    
     beforePageChange = function(event, data) {
         var url = data.toPage;
         if ($.type(url) === 'string') {
@@ -59,7 +58,6 @@
             event.preventDefault();
         }
     },
-    
     getPageFromUrl = function(url, callback) { var 
         parts = url.hash.split('?'), 
         selector = parts[0] || '#lines',

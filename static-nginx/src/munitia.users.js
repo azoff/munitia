@@ -13,6 +13,8 @@
         _geo: {},
         
         _model: {},
+
+        _geoUpdateTime: 60000,
         
         getUserId: function() {
             return this._model.userID;
@@ -24,6 +26,14 @@
         
         getCoords: function() {
             return this._geo.coords;
+        },
+
+        setGeoUpdateTime: function(geoUpdateTime) {
+            return this._geoUpdateTime = geoUpdateTime;
+        },
+
+        getGeoUpdateTime: function() {
+            return this._geoUpdateTime;
         }
         
     };

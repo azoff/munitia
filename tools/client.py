@@ -75,6 +75,13 @@ class MunitiaClient():
     def flickr_search(self, args):
         return hit_url(self.build_url('flickr_search?lt=%s&lg=%s&radius=%s&search_term=%s'%(args[0], args[1], args[2], urllib2.quote(args[3]))));
 
+    def gps_log(self, args):
+        """
+        TODO(tracy): handle optional properties
+        'accuracy', 'altitude', 'altitudeAccuracy', 'heading', 'speed', 'name'
+        """
+        return hit_url(self.build_url('gps_log?lt=%s&lg=%s&user_id=%s'%(args[0], args[1], args[2])))
+
     def google_places_search(self, args):
         return hit_url(self.build_url('google_places_search?lt=%s&lg=%s&radius=%s&search_term=%s'%(args[0], args[1], args[2], urllib2.quote(args[3]))))
                       

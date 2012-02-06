@@ -1,5 +1,5 @@
 (function(geo, namespace, $){ var
-	api = namespace.api,
+    api = namespace.api,
     utils = namespace.utils,   
     stops = namespace.stops, 
     session = namespace.session,
@@ -9,16 +9,83 @@
     module = namespace.game = {
 
         questions: [],
-        
+        gpsPointCount: 0,
+        gpsIntervalId: undefined,
+        gpsTrackName: 'default',
+
+        /*
+          accuracy: 22000
+          altitude: null
+          altitudeAccuracy: null
+          heading: null
+          latitude: 37.774929
+          longitude: -122.419415
+          speed:
+        */
         geolocate: function() {
             controller.showLoader('locating device');
             geo.getCurrentPosition(function(geo){
                 controller.hideLoader();
                 session.user.setGeo(geo);
                 controller.changePage('#lines', { state: 'geo-located' });
+                module.gpsIntervalId = setInterval(module.backgroundGeoLocate, session.user.getGeoUpdateTime());
             });
         },
         
+        backgroundGeoLocate: function() {
+            console.log('attempting background geo locate');
+            geo.getCurrentPosition(function(geo) {
+                    var currentPageId = $.mobile.activePage.get(0).id;
+                    console.log('received geo update');
+                    console.log(geo);
+                    session.user.setGeo(geo);
+                    module.gpsPointCount += 1;
+                    if (currentPageId == "geotest") {
+                        controller.changePage('#geotest');
+                    }
+                    // log it via the api.
+                    // TODO(tracy): check these values on the mobile client.  laptop is just lt/lg
+                    var args = {lt: geo.coords.latitude, lg: geo.coords.longitude, user_id: session.user.getUserId(),
+                                accuracy: geo.coords.accuracy, name: module.gpsTrackName};
+                    api.get('gps_log', args).success(function(response){
+                            console.log(response);
+                        });
+                });
+        },
+        
+        // Method for displaying current geo location.  Will provide a page to test
+        // geo reliability and connectivity as we ride the bus.
+        geoTest: function(page) {
+            var coords = session.user.getCoords();
+            var mapImgSrc = 'http://maps.googleapis.com/maps/api/staticmap?center=' + coords.latitude + ',' + coords.longitude + 
+            '&zoom=16&size=300x150&sensor=false&markers=color:orange%7Clabel:Q%7C' + coords.latitude + ',' + coords.longitude;
+            var args = { lt: coords.latitude, lg: coords.longitude, img_url: mapImgSrc, updatefreq: session.user.getGeoUpdateTime() / 1000, gpsPointCount: module.gpsPointCount, gpsTrackName: module.gpsTrackName};
+            controller.hideLoader();  //NOTE: tracy
+            controller.render('geotest', args, function(html) {
+                    if (html) { 
+                        console.error(html);
+                        page.find('.header').html('Geo Test');
+                        page.find('.refresh').removeClass('ui-btn-active');
+                        page.find('.content').empty().append(html);
+                        $('#updatefreq').change(function() {
+                                //alert($(this).val());
+                                console.log($(this).val());
+                                $('#updatefreq_label').html('Update Frequency ' + $(this).val() + ' seconds');
+                                session.user.setGeoUpdateTime(parseInt($(this).val(), 10) * 1000);
+                                window.clearInterval(module.gpsIntervalId);
+                                module.gpsIntervalId = setInterval(module.backgroundGeoLocate, session.user.getGeoUpdateTime());
+                            });
+                        $('#track_name').change(function() {
+                                console.log($(this).val());
+                                module.gpsTrackName = $(this).val();
+                            });
+                        //$('#geotest').trigger("create");
+                    } else {
+                        renderError('Error rendering trivia import');
+                    }
+                });
+        },
+
         validateStop: function(stop) {
             var valid = stop.hasLines();
             if (!valid) {
@@ -54,7 +121,7 @@
             args = { lt: coords.latitude, lg: coords.longitude };
             controller.showLoader('loading stops');
 	        api.get('find_stops_near', args).success(function(model){
-                module.renderStops(page, model, done); 
+                        module.renderStops(page, model, done); 
             });
             return done.promise();
         },
@@ -200,7 +267,7 @@
         },
 
         triviaImport: function(page) {
-            args = {};
+            args = {api_server: namespace.settings.apiRoot};
             controller.hideLoader();  //NOTE: tracy
             controller.render('triviaimport', args, function(html) {
                     if (html) { 
@@ -224,5 +291,6 @@
     controller.addStateHook('#questions', module.showQuestionsMap);
     controller.addStateHook('#triviaimport', module.triviaImport);
     controller.addStateHook('#loginform', module.loginForm);
+    controller.addStateHook('#geotest', module.geoTest);
     
 })(navigator.geolocation, munitia, jQuery);

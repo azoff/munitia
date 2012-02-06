@@ -85,17 +85,48 @@ var searchTerm = '';
             });
         },
 
-        showPlaces: function(places) {
-            $(".place").remove();
-            for (var i = 0, place; place = places[i]; i++) {
-                var placeStr = "<input type='text' name='question' value='What building is this?'/><br/>correct<br/><input type='text' name='correct' value='" + place.name + "'/><br/>wrong<br/><input type='text' name='wrong0'/><br/>wrong<br/><input type='text' name='wrong1'/><br/>wrong<br/><input type='text' name='wrong2'/><br/>latitude<br/><input type='text' name='lt' value='" + place.geometry.location.lat + "'/><br/>longitude<br/><input type='text' name='lg' value='" + place.geometry.location.lng + "'/><br/><input type='submit' name='submit' value='Add question'/>";
-                $('#google_places_content').empty();
-                $('<div class="place">' + placeStr + '</div>').appendTo('#google_places_content');
-                $('#newquestion_form').ajaxForm(function() { 
-			alert("Thank you for your question!"); 
-                    }); 
+        getPlaceDetailsHtml: function(place) {
+            var mapImgSrc = 'http://maps.googleapis.com/maps/api/staticmap?center=' + place.geometry.location.lat + ',' + place.geometry.location.lng + 
+            '&zoom=16&size=300x150&sensor=false&markers=color:orange%7Clabel:Q%7C' + place.geometry.location.lat + ',' + place.geometry.location.lng;
+            var types = '';
+            for (var i in place.types) {
+                types += place.types[i] + ' ';
             }
-            $('#triviaimport').trigger("create");
+            return types + '<br><img src="' + mapImgSrc + '">';
+        },
+
+        showPlaces: function(places) {
+            $('#google_places_content').empty();
+            var html = '<label for="place_selection">Choose Google Place</label><select id="place_selection" name="place_selection" data-native-menu="false" data-overlay-theme="e">\n'
+            var firstPlaceHtml = '';
+            for (var i = 0, place; place = places[i]; i++) {
+                html += '<option value="' + encodeURIComponent(JSON.stringify(place)) + '">' + place.name + '</option>\n';
+                if (i == 0) {
+                    firstPlaceHtml = module.getPlaceDetailsHtml(place);
+                    $('#correct').val(place.name);
+                    $('#lt').val(place.geometry.location.lat);
+                    $('#lg').val(place.geometry.location.lng);
+                }
+            }
+            html += '</select><center><div id="place_details">' + firstPlaceHtml + '</div></center>';
+            $(html).appendTo('#google_places_content');
+            $('#triviaimport').trigger('create');
+            /*
+            $('#newquestion_form').ajaxForm(function() { 
+                    alert('Thank you for your question!'); 
+                });
+            */
+            $('#place_selection').change(function() {
+                    var place = JSON.parse(decodeURIComponent($(this).val()));
+                    var placeDetailHtml = module.getPlaceDetailsHtml(place);
+                    var placeDetails = $('#place_details');
+                    placeDetails.empty();
+                    placeDetails.html(placeDetailHtml);
+                    // update the form
+                    $('#correct').val(place.name);
+                    $('#lt').val(place.geometry.location.lat);
+                    $('#lg').val(place.geometry.location.lng);
+                });
         },
 
         calledOnFieldChange: function(formElement) {
@@ -126,11 +157,23 @@ var searchTerm = '';
             console.error('Initializing Trivia Import');
             $('#searchform').submit(function() {
                     var search_val = $("#searchval");
+                    $('#search_flickr').val(search_val.val());
+                    $('#search_google_places').val(search_val.val());
+                    $('#search_wikipedia').val(search_val.val());
                     module.searchFlickr(search_val.val());
                     module.searchGooglePlaces(search_val.val());
                     return false;
                 });
+            $('#search_flickr_submit').click(function() {
+                    var search_val = $('#search_flickr');
+                    module.searchFlickr(search_val.val());
+                    return false;
+                });
+            $('#search_google_places_submit').click(function() {
+                    var search_val = $('#search_google_places');
+                    module.searchGooglePlaces(search_val.val());
+                    return false;
+                });
         },
-
     };
 })(navigator.geolocation, munitia, jQuery);

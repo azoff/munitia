@@ -1,0 +1,14 @@
+<div align="center" class="geotest">
+    <h3>${lt} ${lg}</h3>
+    {{if img_url}}
+        <img alt="loading image..." src="${img_url}" />
+    {{/if}}
+<div data-role="fieldcontainer">
+<label id="updatefreq_label" for="updatefreq">Update Frequency ${updatefreq} seconds</label> <input type="range" id="updatefreq" name="updatefreq" min="1" max="300" value="${updatefreq}" />
+</div>
+<div id="gps_point_count">${gpsPointCount} gps points logged</div>
+
+<div data-role="fieldcontainer">
+<label for="track_name">GPS Track Name</label> <input type="text" id="track_name" value="${gpsTrackName}" />
+</div>
+</div>
