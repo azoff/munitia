@@ -199,14 +199,37 @@
             }
         },
 
+        renderAnswer: function(page, args) {
+            console.log(args);
+            var answerParams = { question: module.currentQuestion, args: args, correct: (args.selection == module.currentQuestion.correct)};
+            if (args.selection == module.currentQuestion.correct) {
+                console.log('Correct!');
+            } else {
+                console.log('Wrong!');
+            }
+            controller.render('answer', answerParams, function(html) {
+                    if (html) {
+                        page.find('.content').empty().append(html);
+                        $('#answer').trigger("create");
+                        // find.find('.ui-header').hide();
+                    } else {
+                        utils.error('Unable to render answer for question: ' + module.currentQuestion._id );
+                    }
+                });
+        },
+
         renderNewQuestion: function(page, done) {
+            // TODO(tracy): If we run out of questions, reload some more questions.
             var question = module.questions.shift(), answers = [];
+            module.currentQuestion = question;
             controller.showLoader('rendering question');
             if (!question.correct) { // convert the answer map to a random array
                 question.correct = utils.answersToArray(answers, question.answers);
                 question.answers = answers;
+                module.currentAnswers = answers;
             }
-            controller.render('question', question, function(html) {
+            var templateArgs = { question: question, session: session, api_server: namespace.settings.apiRoot};
+            controller.render('question', templateArgs, function(html) {
                 if (html) {
                     page.data('question', question);
                     page.find('.content').empty().append(html);
@@ -216,6 +239,33 @@
                     }
                     controller.hideLoader();
                     done.resolve();
+                    page.find('.ui-header').hide(); // whack the header
+                } else {
+                    utils.error('Unable to render new_question form');
+                }
+            });
+        },
+
+        renderAnotherQuestion: function(page, done) {
+            // TODO(tracy): If we run out of questions, reload some more questions.
+            var question = module.questions.shift(), answers = [];
+            module.currentQuestion = question;
+            controller.showLoader('rendering question');
+            if (!question.correct) { // convert the answer map to a random array
+                question.correct = utils.answersToArray(answers, question.answers);
+                question.answers = answers;
+                module.currentAnswers = answers;
+            }
+            var templateArgs = { question: question, session: session, api_server: namespace.settings.apiRoot};
+            controller.render('question', templateArgs, function(html) {
+                if (html) {
+                    page.data('question', question);
+                    page.find('.content').empty().append(html);
+                    // only call list view if the page is already initialized
+                    if (page.hasClass('ui-page')) {
+                        html.find('.answers').listview();
+                    }
+                    page.find('.ui-header').hide(); // whack the header
                 } else {
                     utils.error('Unable to render new_question form');
                 }
@@ -247,7 +297,6 @@
 				});
 			return done.promise();
         },
-
 
         renderQuestions: function(page, model) {
             var questionObjs = model.data;
@@ -290,6 +339,8 @@
     controller.addStateHook('#lines', 'geo-located', module.loadStops);
     controller.addStateHook('#round', module.loadRound);
     controller.addStateHook('#questions', module.showQuestionsMap);
+    controller.addStateHook('#anotherquestion', module.renderAnotherQuestion);
+    controller.addStateHook('#answer', module.renderAnswer);
     controller.addStateHook('#triviaimport', module.triviaImport);
     controller.addStateHook('#loginform', module.loginForm);
     controller.addStateHook('#geotest', module.geoTest);

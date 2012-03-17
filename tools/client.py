@@ -23,7 +23,8 @@ def hit_url(url):
 
 class MunitiaClient():
     def __init__(self):
-        self.host = 'localhost'
+        #self.host = 'localhost'
+        self.host = 'ec2-107-20-113-101.compute-1.amazonaws.com'
         self.port = 8080
         pass
 

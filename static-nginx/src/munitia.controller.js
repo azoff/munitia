@@ -74,6 +74,11 @@
             callback(page.appendTo(body), selector, args);
         };
         if (!page.size()) {
+            // NOTE(tracy): What is this doing?  If there is no page, i.e. jQuery couldn't find
+            // #whatever, then call module.render('page', id="whatever", processPage) and then the processPage callback will be
+            // called at some point in the future in order to eventually call the passed in callback.
+            // Does this force all unknown #whatever's to just end up showing page.tmpl?  Shouldn't there be some kind of
+            // error / 404 response?
             module.render('page', { id: id }, processPage);
         } else {
             processPage(page);

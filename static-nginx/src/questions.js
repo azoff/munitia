@@ -26,8 +26,41 @@ function initializeQuestionsMap(done) {
 		   i++;
 		   bindQuestion(question);
 	       }
-               done.resolve();
-	       munitia.controller.hideLoader();
+               // load some points based on the current track name
+               var track_args = {name: munitia.game.gpsTrackName};
+               munitia.api.get('gps_points', track_args).success(function(response) {
+                       var points = response.data;
+                       var gmapPoints = [];
+                       var currentTrackName = points[0].name;
+                       for (var i=0; i < points.length; i++) {
+                           var newPoint = new google.maps.LatLng(points[i].loc[1], points[i].loc[0]);
+                           console.error('currentTrackName=' + currentTrackName);
+                           console.error('currentPoint.name=' + points[i].name);
+                           if (points[i].name != currentTrackName) {
+                               console.error('rendering line, starting new one.');
+                               // we need to end existing polyline and start a new one.
+                               var gmapPath = new google.maps.Polyline({
+                                       path: gmapPoints,
+                                       strokeColor: '#ee8543',
+                                       strokeOpacity: 1.0,
+                                       strokeWeight: 6
+                                   });
+                               gmapPath.setMap(map);
+                               gmapPoints = [];
+                               currentTrackName = points[i].name;
+                           }
+                           gmapPoints.push(newPoint);
+                       }
+                       var gmapPath = new google.maps.Polyline({
+                               path: gmapPoints,
+                               strokeColor: '#ee8543',
+                               strokeOpacity: 1.0,
+                               strokeWeight: 2
+                           });
+                       gmapPath.setMap(map);
+                       done.resolve();
+                       munitia.controller.hideLoader();
+                   });
 	   });
     });
 }

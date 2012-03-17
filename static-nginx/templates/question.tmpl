@@ -1,11 +1,14 @@
 <div class="question">
-    <h3>${question}</h3>
-    {{if img_url}}
-        <img alt="loading image..." src="${img_url}" />
+    {{if question.img_url}}
+    <div class="image_question" align="center">
+        <img alt="loading image..." src="${question.img_url}" />
+    </div>
     {{/if}}
     <ul class="answers" data-role="listview">
-        {{each(i, answer) answers}}
+        {{each(i, answer) question.answers}}
             <li><a href="#answer?selection=${i}">${answer}</a></li>
         {{/each}}
     </ul>
+    <br/>
+    <a href="${api_server}/delete_question?id=${question._id}" data-role="button">Delete</a>
 </div>
