@@ -149,19 +149,23 @@
             args = {}, stop, line, done = $.Deferred(),
             stops = $('#lines').data('stops');
             if (stops) {
-                stop = stops[parseInt(model.stop, 10)];
-                line = stop.lines[parseInt(model.line, 10)];
-                args.stretch_id = stop.getStretchId(line);
-                page.find('.header').html(line.prettyName());
-                api.get('find_round', args).success(function(round) {
-                    if (round && round.data && round.data.length) {
-                        module.addToRound(page, round, done);
-                    } else {
-                        api.get('create_round', args).success(function(){
+                if (!module.questions.length) {
+                    stop = stops[parseInt(model.stop, 10)];
+                    line = stop.lines[parseInt(model.line, 10)];
+                    args.stretch_id = stop.getStretchId(line);
+                    page.find('.header').html(line.prettyName());
+                    api.get('find_round', args).success(function(round) {
+                        if (round && round.data && round.data.length) {
                             module.addToRound(page, round, done);
-                        });
-                    }
-                });
+                        } else {
+                            api.get('create_round', args).success(function(){
+                                module.addToRound(page, round, done);
+                            });
+                        }
+                    });
+                } else {
+                    module.renderNewQuestion(page, done);
+                }
             }
             return done.promise();
         },
@@ -245,33 +249,7 @@
                 }
             });
         },
-
-        renderAnotherQuestion: function(page, done) {
-            // TODO(tracy): If we run out of questions, reload some more questions.
-            var question = module.questions.shift(), answers = [];
-            module.currentQuestion = question;
-            controller.showLoader('rendering question');
-            if (!question.correct) { // convert the answer map to a random array
-                question.correct = utils.answersToArray(answers, question.answers);
-                question.answers = answers;
-                module.currentAnswers = answers;
-            }
-            var templateArgs = { question: question, session: session, api_server: namespace.settings.apiRoot};
-            controller.render('question', templateArgs, function(html) {
-                if (html) {
-                    page.data('question', question);
-                    page.find('.content').empty().append(html);
-                    // only call list view if the page is already initialized
-                    if (page.hasClass('ui-page')) {
-                        html.find('.answers').listview();
-                    }
-                    page.find('.ui-header').hide(); // whack the header
-                } else {
-                    utils.error('Unable to render new_question form');
-                }
-            });
-        },
-
+        
         showQuestionsMap: function(page, args) {
             var done = $.Deferred();
 			controller.showLoader('showing questions');
@@ -339,7 +317,6 @@
     controller.addStateHook('#lines', 'geo-located', module.loadStops);
     controller.addStateHook('#round', module.loadRound);
     controller.addStateHook('#questions', module.showQuestionsMap);
-    controller.addStateHook('#anotherquestion', module.renderAnotherQuestion);
     controller.addStateHook('#answer', module.renderAnswer);
     controller.addStateHook('#triviaimport', module.triviaImport);
     controller.addStateHook('#loginform', module.loginForm);
