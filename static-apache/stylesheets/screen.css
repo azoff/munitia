@@ -1,0 +1,14 @@
+.hidden { display: none !important; }
+
+body { 
+    background-color:#f0f0f0;
+    background-image: url("/images/logo.png"), -moz-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
+    background-image: url("/images/logo.png"), -webkit-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
+    background-image: url("/images/logo.png"), -o-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
+    background-image: url("/images/logo.png"), -ms-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
+    background-image: url("/images/logo.png"), radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+[data-role=page] { background: none transparent; }

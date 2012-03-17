@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Munitia - Public Trivia</title>
+    <meta http-equiv="cleartype" content="on">
+    <meta name="description" content="Play trivia while riding the bus">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">    
+    <link rel="stylesheet" href="//code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.css">
+    <link rel="stylesheet" href="/stylesheets/screen.css">
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/yepnope/1.0.1/yepnope.min.js"></script>        
+</head>
+
+<body>
+    <div data-role="page">
+    	<div data-role="header">
+    	    <h1 class="header">Welcome to Munitia</h1>
+    	    <a href="#login" class="ui-btn-right" data-role="button" data-icon="arrow-r" data-iconpos="right">Log In</a>
+    	</div>
+    	<div class="content" data-role="content"></div>
+    </div>    
+    <script>window._gaq=[["_setAccount","UA-24616806-1"],["_trackPageview"]]</script>
+    <script>
+        yepnope([
+            {
+                test: window.JSON,
+                nope: '//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js'
+            },
+            {
+                test: window.localStorage,
+                nope: '//raw.github.com/gist/350433/c9d3834ace63e5f5d7c8e1f6e3e2874d477cb9c1/gistfile1.js'
+            },
+            {
+                load: [
+                    '//code.jquery.com/jquery-latest.min.js',            
+                    '//code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js',
+                    '//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js',                
+                    '/src/munitia.js',
+                    '/src/munitia.users.js',
+                    '/src/munitia.session.js',
+                    '/src/munitia.controller.js',
+                    '/src/munitia.game.js'
+                ],
+                complete: function() {
+                    $(function(){
+                        munitia.controller.showSpinner();
+                        munitia.config(document.domain)
+                            .then(munitia.game.actions.start);
+                    });
+                }
+            },
+            '//www.google-analytics.com/ga.js'
+        ]);
+    </script>
+</body>
+
+</html>
