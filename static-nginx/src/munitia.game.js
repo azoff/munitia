@@ -276,25 +276,25 @@
             var done = $.Deferred();
 			controller.showLoader('showing questions');
 			controller.render('questions', {}, function(html) {
-					if (html) {
-						console.log('found? ' + page.find('.ui-footer').length)
-						var footerHeight = page.find('.ui-footer').height();
-						console.log('footerHeight=' + footerHeight);
-						var headerHeight = page.find('.ui-header').height();
-						console.log('headerHeight=' + headerHeight);
-						console.log('page.height()=' + page.height());
-						var canvasHeight = page.height() - (headerHeight + canvasHeight);
-						console.log(html);
-						page.find('.content').empty().append(html); 
-						console.log('canvasHeight = ' + canvasHeight);
-						page.find('#map_canvas').height(page.height());
-						initializeQuestionsMap(done);
-					} else {
-                        utils.error('error showing questions');
-						controller.hideLoader();
-						done.fail();
-					}
-				});
+				if (html) {
+					console.log('found? ' + page.find('.ui-footer').length)
+					var footerHeight = page.find('.ui-footer').height();
+					console.log('footerHeight=' + footerHeight);
+					var headerHeight = page.find('.ui-header').height();
+					console.log('headerHeight=' + headerHeight);
+					console.log('page.height()=' + page.height());
+					var canvasHeight = page.height() - (headerHeight + canvasHeight);
+					console.log(html);
+					page.find('.content').empty().append(html); 
+					console.log('canvasHeight = ' + canvasHeight);
+					page.find('#map_canvas').height(page.height());
+					initializeQuestionsMap(done);
+				} else {
+                    utils.error('error showing questions');
+					controller.hideLoader();
+					done.fail();
+				}
+			});
 			return done.promise();
         },
 
