@@ -1,0 +1,17 @@
+<div class="answer">
+    {{if question.img_url}}
+    <div class="image_answer" align="center">
+        <img alt="loading image..." src="${question.img_url}" />
+    </div>
+    {{/if}}
+    {{if correct}}
+    <br/>
+    <div class="correct_answer" align="center>
+    <a href="#anotherquestion" data-role="button">CORRECT!</a>
+    </div>
+    {{else}}
+    <div class="wrong_answer" align="center>
+    <a href="#anotherquestion" data-role="button">WRONG!</a>
+    </div>
+    {{/if}}
+</div>
