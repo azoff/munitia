@@ -24,10 +24,16 @@
                     page.trigger('create');
                 });
             }  
+            if (options.footer) {
+                page.find(':jqmData(role=footer)').removeClass('hidden')
+                    .find('h4').text(options.footer);
+            } else {
+                page.find(':jqmData(role=footer)').addClass('hidden');
+            }
             return $.when.apply($, [page, options.content]);
         },
         
-        page: function(id) {
+        getPage: function(id) {
             if (!(id in pages)) {
                 pages[id] = module.render('page', { id: id }).then(function(page){
                     page.appendTo(mobile.pageContainer).page();
@@ -55,18 +61,14 @@
             return renderer.promise();
         },
         
-        changeState: function(state, options) {
-            mobile.changePage(state, options);
-        },
-        
-        router: function(state, options) {
+        router: function(state, options) {                
             module.showSpinner();
             // load the page
-            module.page(state).then(function(page){
+            module.getPage(state).then(function(page){
                 // handle game logic
-                namespace.game.states[state](page).then(function(){
+                namespace.game.changeState(state, page).then(function(){
                     // show the page (using an object prevents recursion)
-                    module.changeState(page, options);
+                    mobile.changePage(page, options);
                     module.hideSpinner();
                 });
             });

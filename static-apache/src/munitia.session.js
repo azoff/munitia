@@ -42,7 +42,7 @@
             if (!_position) {
                 _position = $.Deferred();
                 geo.getCurrentPosition(function(position){
-                    _position = position;
+                    _position.resolve(position);
                 });
             }
             return _position.promise();

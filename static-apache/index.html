@@ -41,17 +41,16 @@
                     '//code.jquery.com/mobile/1.1.0-rc.1/jquery.mobile-1.1.0-rc.1.min.js',
                     '//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js',                
                     '/src/munitia.js',
+                    '/src/munitia.states.js',                    
                     '/src/munitia.users.js',
                     '/src/munitia.session.js',
                     '/src/munitia.controller.js',
                     '/src/munitia.game.js'
                 ],
                 complete: function() {
-                    $(function(){
-                        munitia.controller.showSpinner();
-                        munitia.config(document.domain)
-                            .then(munitia.game.actions.start);
-                    });
+                    munitia.controller.showSpinner();
+                    munitia.config(document.domain)
+                        .then(munitia.game.start);
                 }
             },
             '//www.google-analytics.com/ga.js'
