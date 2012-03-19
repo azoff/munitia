@@ -59,7 +59,7 @@
                     // try to get the user's position
                     return session.getPosition().then(function(position){
                         controller.fill(page, { header: 'Device Found!' });
-                        page.find('.geo').removeClass('hidden').addClass('fade in');
+                        page.find('.geo').removeClass('hidden');
                         var coords = position.coords, img = page.find('img'),
                         src = '//maps.googleapis.com/maps/api/staticmap?';
                         src += 'sensor=true&zoom=13&markers=color:black%7Csize%7Ctiny|'; 
