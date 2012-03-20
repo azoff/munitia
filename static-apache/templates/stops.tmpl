@@ -1,0 +1,8 @@
+<ul data-role="listview">
+    {{each(i, stop) stops}}
+        <li data-role="list-divider">${stop}</li>
+        {{each(j, line) stop.lines}}
+            <li><a data-stop="${i}" data-line="${j}">${line.prettyName()}</a></li>
+        {{/each}}
+    {{/each}}    
+</ul>

@@ -9,7 +9,7 @@
                 url: [namespace.conf.apiHost, path].join('/'), 
                 data: data, 
                 type: type,
-                cache: false,
+                cache: true,
                 crossDomain: true,
                 dataType: 'json'
             });

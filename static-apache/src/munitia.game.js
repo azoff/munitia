@@ -1,8 +1,17 @@
-(function(global, namespace, controller, session, users, State, mobile){
+(function(global, namespace, mobile, $){
     
     "use strict";
     
-    var model, instances = {},
+    var 
+    controller = namespace.controller, 
+    session = namespace.session, 
+    api = namespace.api, 
+    users = namespace.users,
+    stops = namespace.stops,
+    states = namespace.states,
+    
+    model = {}, 
+    instances = {},
     
     module = namespace.game = {
         
@@ -20,7 +29,7 @@
         // handles state change processing
         changeState: function(state, page) {            
             if (!(state in instances)) {
-                instances[state] = new State(module.states[state]);
+                instances[state] = new states.State(module.states[state]);
             }
             return instances[state].execute(page);
         },
@@ -40,7 +49,7 @@
                             var alias = page.find('input'),
                             user = users.fromAlias(alias.val()); 
                             session.setUser(user);
-                            module.start() // back to start
+                            module.start(); // back to start
                             return false; // don't submit
                         });
                     });
@@ -58,6 +67,7 @@
                     controller.fill(page, { header: 'Locating Your Device' });
                     // try to get the user's position
                     return session.getPosition().then(function(position){
+                        model.coords = position.coords;                        
                         controller.fill(page, { header: 'Device Found!' });
                         page.find('.geo').removeClass('hidden');
                         var coords = position.coords, img = page.find('img'),
@@ -69,10 +79,42 @@
                         img.attr('src', src);
                     });
                 }
+            },
+            
+            // shows the applicable lines for the current position
+            lines: {
+                init: function(page) {                            
+                    return controller.fill(page, { header: 'Select A Line' });
+                },
+                update: function(page) {            
+                    var renderer = $.Deferred();
+                    // get stops around user's current position
+                    api.get('find_stops_near', {
+                        lt: model.coords.latitude, 
+                        lg: model.coords.longitude
+                    }).success(function(resposne){
+                        // filter stops that have lines
+                        model.stops = stops.fromModels(resposne.data);
+                        // add the stops to the page
+                        controller.fill(page, {
+                            content: controller.render('stops', model)
+                        }).then(function(page, content){
+                            // set model and join round when a line is selected
+                            content.on('click', 'a', function(){
+                                var data = $(this).data();
+                                model.stop = model.stops[data.stop];
+                                model.line = model.stop.lines[data.line];
+                                mobile.changePage('round');
+                            });
+                            
+                        }).then(renderer.resolve);
+                    });
+                    return renderer;
+                }                
             }
             
         }
         
     };
     
-})(window, munitia, munitia.controller, munitia.session, munitia.users, munitia.states.State, jQuery.mobile);
+})(window, munitia, jQuery.mobile, jQuery);
