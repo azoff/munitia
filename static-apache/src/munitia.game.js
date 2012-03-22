@@ -15,8 +15,6 @@
     
     module = namespace.game = {
         
-        model: { },
-        
         // picks the correct start state
         start: function() {
             if (session.hasUser()) {
@@ -48,8 +46,12 @@
                         content.submit(function(){
                             var alias = page.find('input'),
                             user = users.fromAlias(alias.val()); 
-                            session.setUser(user);
-                            module.start(); // back to start
+                            if (alias.length) {                             
+                                session.setUser(user);
+                                module.start(); // back to start   
+                            } else {
+                                controller.notify('Please provide a valid alias.');
+                            }
                             return false; // don't submit
                         });
                     });
@@ -92,25 +94,76 @@
                     api.get('find_stops_near', {
                         lt: model.coords.latitude, 
                         lg: model.coords.longitude
-                    }).success(function(resposne){
-                        // filter stops that have lines
-                        model.stops = stops.fromModels(resposne.data);
-                        // add the stops to the page
-                        controller.fill(page, {
-                            content: controller.render('stops', model)
-                        }).then(function(page, content){
-                            // set model and join round when a line is selected
-                            content.on('click', 'a', function(){
-                                var data = $(this).data();
-                                model.stop = model.stops[data.stop];
-                                model.line = model.stop.lines[data.line];
-                                mobile.changePage('round');
-                            });
-                            
-                        }).then(renderer.resolve);
+                    }).then(function(response){
+                        if (response && response.data && response.data.length) {
+                            // filter stops that have lines
+                            model.stops = stops.fromModels(response.data);
+                            // add the stops to the page
+                            controller.fill(page, {
+                                content: controller.render('stops', model)
+                            }).then(function(page, content){
+                                // set model and join round when a line is selected
+                                content.on('click', 'a', function(){
+                                    var data = $(this).data();
+                                    model.stop = model.stops[data.stop];
+                                    model.line = model.stop.lines[data.line];
+                                    model.stretchId = model.stop.getStretchId(model.line);
+                                    mobile.changePage('round');
+                                });
+
+                            }).then(renderer.resolve);
+                        } else {
+                            controller.notify('Unable to find stops by you.');
+                        }
                     });
                     return renderer;
                 }                
+            },
+            
+            // Adds the current user to a round, or creates one if the round does not exist
+            round: {
+                init: function(page) {
+                    return controller.fill(page, { 
+                        content: controller.render('round') 
+                    });
+                },
+                update: function(page) {
+                    var args = {},
+                    content = page.find('.round').removeClass('fade in'),
+                    // (4) shows the current round to the user
+                    show = $.Deferred().then(function(response){
+                        if (response.status === 200) {
+                            var count = model.round.users.length,
+                            noun = count === 1 ? ' Participant' : ' Participants';
+                            controller.fill(page, { header: 'Round Joined!' });
+                            content.find('h3').html(model.line.prettyName());
+                            content.find('h4').html(count + noun);
+                            content.addClass('fade in');
+                        } else {
+                            controller.notify('Unable to add you to round.');
+                        }
+                    }),
+                    // (3) adds the current user to a round
+                    adder = $.Deferred().then(function(response){
+                        model.round = response.data[0];
+                        args.round_id = model.round._id;
+                        args.user_id = session.getUser().getId();
+                        api.get('add_to_round', args).then(show.resolve);
+                    }),
+                    // (2) creates a round, if necessary
+                    creator = $.Deferred().then(function(response){
+                        if (response && response.data && response.data.length) {
+                            adder.resolve(response);
+                        } else {
+                            api.get('create_round', args).success(adder.resolve);
+                        }
+                    });
+                    // (1) finds a round to put the current user in
+                    controller.fill(page, { header: 'Joining Round...' });
+                    args.stretch_id = model.stretchId;
+                    api.get('find_round', args).then(creator.resolve);                    
+                    return show.promise();
+                }
             }
             
         }

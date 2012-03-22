@@ -19,4 +19,7 @@
         
     };
     
+    // jqmData is acting weird, eventually need to take this out...
+    $.fn.jqmData = $.fn.data;
+    
 })(window, yepnope, jQuery);

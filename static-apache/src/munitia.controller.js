@@ -14,6 +14,17 @@
             mobile.hidePageLoadingMsg();
         },
         
+        notify: global.onerror = function(msg) {
+            module.render('notif', { msg: msg }).then(function(notif){
+                notif.insertAfter(mobile.activePage.find(':jqmData(role=header)'));
+                notif.find('a').click(function(){
+                    notif.remove();
+                });
+                mobile.activePage.trigger('create');
+                notif.addClass('fade in');
+            });
+        },
+        
         fill: function(page, options) {
             if (options.header) {
                 page.find(':jqmData(role=header) h1').html(options.header);
