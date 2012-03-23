@@ -132,7 +132,7 @@
                     content = page.find('.round').removeClass('fade in'),
                     // (4) shows the current round to the user
                     show = $.Deferred().then(function(response){
-                        if (response.status === 200) {
+                        if (response.status === 200 && model.round.users) {
                             var count = model.round.users.length,
                             noun = count === 1 ? ' Participant' : ' Participants';
                             controller.fill(page, { header: 'Round Joined!' });
@@ -163,6 +163,89 @@
                     args.stretch_id = model.stretchId;
                     api.get('find_round', args).then(creator.resolve);                    
                     return show.promise();
+                }
+            },
+            
+            // renders questions for the current user
+            questions: {
+                init: function(page) {
+                    return controller.fill(page, {
+                        content: controller.render('question')
+                    });
+                },
+                update: function(page) {
+                    var content = page.find('.question'),
+                    next = content.find(':jqmData(role=button)').addClass('hidden'),
+                    // (4) binds listeners for the correct answer
+                    listeners = $.Deferred().then(function(listview, correct){
+                        listview.on('click', 'li', function select(){
+                            listview.off('click', 'li', select);
+                            var selected = $(this).addClass('red');                                                        
+                            selected.siblings().not(correct).remove();
+                            correct.addClass('green');
+                            next.removeClass('hidden');
+                            model.question++;
+                            if (selected.is(correct)) {
+                                listview.prevAll('h3').html('Correct!');
+                            } else {
+                                listview.prevAll('h3').html('Wrong!');
+                            }
+                        });
+                    }),
+                    // (3) render the current question
+                    renderer = $.Deferred().then(function(){
+                        var question = model.questions[model.question],
+                        listview = content.find(':jqmData(role=listview)').empty(),
+                        answers = [], correct;
+                        controller.fill(page, { 
+                            header: 'Question ' +(model.question+1)+ ' of ' + model.questions.length
+                        });
+                        // set question prompt
+                        content.find('h3').html(question.question);
+                        // set image, if any
+                        if (question.img_url) {
+                            content.find('img').show(0).attr('src', question.img_url);
+                        } else {
+                            content.find('img').hide(0);
+                        }
+                        // sort answers randomly
+                        $.each(question.answers, function(key, value){
+                            if (value) { answers.push(value); }
+                        }); answers.sort(function() {
+                            return Math.round(Math.random())-0.5;
+                        });
+                        // add answers to listview
+                        $.each(answers, function(key, answer){
+                            var item = $('<li/>').html(answer).appendTo(listview);
+                            if (answer === question.answers.correct) { 
+                                correct = item; 
+                            }
+                        }); listview.listview('refresh');
+                        // attach listeners
+                        listeners.resolve(listview, correct);
+                    }),
+                    // (2) set the questions into the model
+                    setter = $.Deferred().then(function(response){
+                        if (response && response.data && response.data.length) {
+                            model.questions = response.data;
+                            model.question = 0;
+                            renderer.resolve();
+                        } else {
+                            controller.notify('Unable to load questions.');
+                        }
+                    });
+                    // (1) load questions from the server
+                    controller.fill(page, { header: 'Loading Question...' });                    
+                    if (model.questions) {
+                        renderer.resolve();
+                    } else {
+                        api.get('find_questions_near', { 
+                            lt: model.coords.latitude, 
+                            lg: model.coords.longitude 
+                        }).then(setter.resolve);
+                    }
+                    
+                    return listeners.promise();
                 }
             }
             

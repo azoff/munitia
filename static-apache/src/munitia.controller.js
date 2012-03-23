@@ -88,6 +88,7 @@
     };
     
     $(doc).on('pagebeforechange', function(event, data) {
+        console.log(data.toPage);
         if ($.type(data.toPage) === 'string') {
             module.router(data.toPage.split('#').pop(), data.options);
             event.preventDefault();
