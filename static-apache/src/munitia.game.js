@@ -61,7 +61,6 @@
             
             // locates the user's position and shows it on a map
             geolocate: {
-                footer: false,
                 init: function(page) {
                     session.trackPosition();
                     return controller.fill(page, {

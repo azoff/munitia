@@ -6,7 +6,7 @@
         
         execute: function(type, path, data) {
             return $.ajax({
-                url: [namespace.conf.apiHost, path].join('/'), 
+                url: [namespace.config.apiHost, path].join('/'), 
                 data: data, 
                 type: type,
                 cache: true,

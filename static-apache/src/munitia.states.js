@@ -27,13 +27,13 @@
             if (!state.ready) { 
                 // lazy init, only init once
                 state.ready = state.init(page);
-                if (!state.ready.then) {
+                if (!state.ready || !state.ready.then) {
                     state.ready = module.noop();
                 }
             }            
             state.ready.then(function(){
                 var update = state.update(page);
-                if (!update.then) {
+                if (!update || !update.then) {
                     update = module.noop();
                 }
                 update.then(executor.resolve);

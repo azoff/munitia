@@ -20,21 +20,25 @@
         
         log: function() {
             var args = slice.call(arguments);
-            if (munitia.conf.logging && console) {
+            if (munitia.config.logging && console) {
                 console.log.apply(console, args);
             }
         },
         
         error: function() {
             var args = slice.call(arguments);
-            if (munitia.conf.logging && console) {
+            if (munitia.config.logging && console) {
                 console.error.apply(console, args);
             }
         }
         
     };
     
-    // jqmData is acting weird, eventually need to take this out...
+    // jqmData is acting weird, this is a hack to override its
+    // behavior to the much more predictable $.fn.data. No idea
+    // how much of a consequence this will have, but it - at the
+    // very least - allows the app to run. This only started 
+    // failing recently, so it might be user error.
     $.fn.jqmData = $.fn.data;
     
 })(window, window.console, Array.prototype.slice, yepnope, jQuery);
