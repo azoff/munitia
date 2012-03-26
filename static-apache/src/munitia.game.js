@@ -17,8 +17,18 @@
         
         // picks the correct start state
         start: function() {
+            
+            // if session is found...
             if (session.hasUser()) {
-                mobile.changePage('geolocate');
+                var hash = $.trim(global.location.hash);
+                // let the user choose his start state, unless
+                // that start state is empty or the login state
+                if (hash.length === 0 || hash === 'login') {
+                    hash = 'geolocate';
+                }
+                mobile.changePage(hash);
+            
+            // always force login if no session is found
             } else {
                 mobile.changePage('login');
             }
