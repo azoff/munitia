@@ -16,7 +16,7 @@
             return this.options.alias;
         }
         
-    }
+    };
     
     var module = namespace.users = {
         

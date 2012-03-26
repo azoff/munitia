@@ -1,4 +1,4 @@
-(function(namespace, jQuery){
+(function(namespace, $){
     
     "use strict";
     
@@ -25,4 +25,4 @@
         
     };
     
-})(munitia, $);
+})(munitia, jQuery);

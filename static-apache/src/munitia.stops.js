@@ -4,13 +4,11 @@
     
     var module = namespace.stops = {
     
-        Stop: Stop,
-    
         fromModels: function(models, filter) {
             var stops = []; 
             filter = $.isFunction(filter) ? filter : $.noop;
             $.each(models, function(i, model){
-                var stop = module.fromModel(model)
+                var stop = module.fromModel(model);
                 if (stop.hasLines()) {
                     stops.push(stop);
                 }
@@ -19,7 +17,7 @@
         },
         
         fromModel: function(model) {
-            return new Stop(model);
+            return new module.Stop(model);
         },
         
         parseNextStops: function(nextStops) {
@@ -39,7 +37,7 @@
         
     };
     
-    function Stop(model) {        
+    module.Stop = function(model) {        
         this.id = model.stop_id;
         this.name = model.name;        
         this.lines = namespace.lines.fromUniqueIds(model.lines);
@@ -49,14 +47,14 @@
 		        this.longitude = model.loc[0];
 		        this.latitude = model.loc[1];
 	        } else {
-		        console.error('Missing loc info for stop!', model._id);
+		        namespace.error('Missing loc info for stop!', model._id);
 	        }
         } else {
-	        console.error('Missing next info for stop!', model._id);
+	        namespace.error('Missing next info for stop!', model._id);
         }
-    }
+    };
     
-    Stop.prototype = {
+    module.Stop.prototype = {
         
         toString: function() {
             return this.name;

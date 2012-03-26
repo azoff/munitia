@@ -1,15 +1,23 @@
-(function(global, namespace){
+(function(global, namespace, $){
     
     "use strict";
     
-    function State(options) {
+    var module = namespace.states = {
+        
+        noop: function() {
+            return $.Deferred().resolve();
+        }
+        
+    };
+
+    module.State = function(options) {
         options = options || {};
         this.footer = ('footer' in options) ? options.footer : true;
         this.init = options.init ? options.init : module.noop;
         this.update = options.update ? options.update : module.noop;
-    }
+    };
     
-    State.prototype = {
+    module.State.prototype = {
         
         execute: function(page) {
             var executor = $.Deferred(), state = this;
@@ -33,16 +41,6 @@
             return executor.promise();
         }
         
-    }
-    
-    var module = namespace.states = {
-        
-        State: State,
-        
-        noop: function() {
-            return $.Deferred().resolve();
-        }
-        
     };
     
-})(window, munitia);
+})(window, munitia, jQuery);

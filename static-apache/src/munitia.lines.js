@@ -2,6 +2,13 @@
     
     "use strict";    
     
+    function Line(model) {
+        this.id        = model.id;
+        this.direction = parseInt(model.direction, 10);
+        this.shortName = $.trim(model.shortName).toUpperCase();
+        this.longName  = $.trim(model.longName).toUpperCase();        
+    }
+    
     var module = namespace.lines = {
     
         DIRECTION_OUTBOUND: 1,
@@ -34,13 +41,6 @@
         
     };
     
-    function Line(model) {
-        this.id        = model.id;
-        this.direction = parseInt(model.direction, 10);
-        this.shortName = $.trim(model.shortName).toUpperCase();
-        this.longName  = $.trim(model.longName).toUpperCase();        
-    }
-    
     Line.prototype = {
         
         toString: function() {
@@ -56,8 +56,9 @@
                 case module.DIRECTION_OUTBOUND:
                     return 'OUTBOUND';
                 case module.DIRECTION_INBOUND:
-                default:
                     return 'INBOUND';
+                default:
+                    return 'UNKNOWN';
             }
         }
         

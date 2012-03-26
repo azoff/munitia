@@ -1,4 +1,4 @@
-(function(global, geo, namespace, users, storage, json){
+(function(global, geo, namespace, users, storage, json, $){
     
     "use strict";
     
@@ -55,10 +55,10 @@
         trackPosition: function() {
             _position = null;
             module.getPosition().then(function(){
-                setTimeout(module.trackPosition, TRACKING_INTERVAL);
+                global.setTimeout(module.trackPosition, TRACKING_INTERVAL);
             });
         }
         
     };
     
-})(window, navigator.geolocation, munitia, munitia.users, localStorage, JSON);
+})(window, navigator.geolocation, munitia, munitia.users, localStorage, JSON, jQuery);

@@ -1,4 +1,5 @@
-(function(global, loader, $){
+/*global yepnope*/
+(function(global, console, slice, loader, $){
     
     "use strict";
     
@@ -15,6 +16,20 @@
         
         settings: {
             apiRoot: ''
+        },
+        
+        log: function() {
+            var args = slice.call(arguments);
+            if (munitia.conf.logging && console) {
+                console.log.apply(console, args);
+            }
+        },
+        
+        error: function() {
+            var args = slice.call(arguments);
+            if (munitia.conf.logging && console) {
+                console.error.apply(console, args);
+            }
         }
         
     };
@@ -22,4 +37,4 @@
     // jqmData is acting weird, eventually need to take this out...
     $.fn.jqmData = $.fn.data;
     
-})(window, yepnope, jQuery);
+})(window, window.console, Array.prototype.slice, yepnope, jQuery);
