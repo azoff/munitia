@@ -34,12 +34,6 @@
                     page.find(':jqmData(role=content)').empty().append(content);
                     page.trigger('create');
                 });
-            }  
-            if (options.footer) {
-                page.find(':jqmData(role=footer)').removeClass('hidden')
-                    .find('h4').text(options.footer);
-            } else {
-                page.find(':jqmData(role=footer)').addClass('hidden');
             }
             return $.when.apply($, [page, options.content]);
         },
@@ -88,7 +82,6 @@
     };
     
     $(doc).on('pagebeforechange', function(event, data) {
-        console.log(data.toPage);
         if ($.type(data.toPage) === 'string') {
             module.router(data.toPage.split('#').pop(), data.options);
             event.preventDefault();

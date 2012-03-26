@@ -36,6 +36,7 @@
             
             // this state asks the user to provide an alias
             login: {
+                footer: false,
                 init: function(page) {
                     // create the login form
                     return controller.fill(page, {
@@ -60,7 +61,9 @@
             
             // locates the user's position and shows it on a map
             geolocate: {
+                footer: false,
                 init: function(page) {
+                    session.trackPosition();
                     return controller.fill(page, {
                         content: controller.render('geo')
                     });
@@ -90,6 +93,12 @@
                 },
                 update: function(page) {            
                     var renderer = $.Deferred();
+                    
+                    // make sure geolocation is on!
+                    if (!model.coords) {
+                        return mobile.changePage('geolocate');
+                    }
+                    
                     // get stops around user's current position
                     api.get('find_stops_near', {
                         lt: model.coords.latitude, 

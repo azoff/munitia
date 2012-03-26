@@ -2,7 +2,9 @@
     
     "use strict";
     
-    var USER_STORAGE_KEY = 'munitia.user',
+    var 
+    USER_STORAGE_KEY = 'munitia.user',
+    TRACKING_INTERVAL = 1000,
     
     _user = null, _position = null,
     
@@ -46,6 +48,15 @@
                 });
             }
             return _position.promise();
+        },
+        
+        // async loop to keep track of position in a performant manner
+        // use getPosition to actually use the value
+        trackPosition: function() {
+            _position = null;
+            module.getPosition().then(function(){
+                setTimeout(module.trackPosition, TRACKING_INTERVAL);
+            });
         }
         
     };
