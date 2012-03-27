@@ -48,17 +48,18 @@
                 });
             }
             return _position.promise();
-        },
-        
-        // async loop to keep track of position in a performant manner
-        // use getPosition to actually use the value
-        trackPosition: function() {
-            _position = null;
-            module.getPosition().then(function(){
-                global.setTimeout(module.trackPosition, TRACKING_INTERVAL);
-            });
         }
         
     };
+    
+    
+    // async loop to keep track of position in a performant manner
+    // use getPosition to actually use the value
+    (function trackPosition() {
+        _position = null;
+        module.getPosition().then(function(){
+            global.setTimeout(trackPosition, TRACKING_INTERVAL);
+        });
+    })();
     
 })(window, navigator.geolocation, munitia, munitia.users, localStorage, JSON, jQuery);

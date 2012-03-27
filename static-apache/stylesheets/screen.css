@@ -52,3 +52,43 @@ body {
     background: green;
     color: white;
 }
+
+form {
+    display: block;
+    padding: 15px !important;
+}
+form .ui-input-text {
+    margin-bottom: 0.5em;
+}
+form .ui-btn {
+    margin-top: 1em;
+}
+
+form [role=heading] {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#flickrimgs {
+    margin-top: 1em;
+}
+
+#flickrimgs [data-role=button] {
+    overflow: hidden;
+}
+
+#flickrimgs [data-role=button] input {
+    visibility: hidden;
+}
+
+#flickrimgs label {
+    height: 240px;
+    width: 240px;
+    border: none 0;
+    background: none scroll no-repeat left center transparent;
+    position: relative;
+}
+
+#flickrimgs label .ui-btn-inner {
+    height: 9px;
+}

@@ -1,0 +1,6 @@
+{{each(i, img) photo}}
+<div data-role="button" data-theme="a" class="ui-block-{{if i%4===0}}a{{else i%4===1}}b{{else i%4===2}}c{{else i%4===1}}d{{/if}}">
+        <label style="background-image:url(http://farm${img.farm}.static.flickr.com/${img.server}/${img.id}_${img.secret}_m.jpg)" for="img-url-${i}"></label>
+    <input type="radio" name="img_url" id="img-url-${i}" value="http://farm${img.farm}.static.flickr.com/${img.server}/${img.id}_${img.secret}_t.jpg" />
+</div>
+{{/each}}

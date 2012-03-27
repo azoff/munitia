@@ -1,4 +1,4 @@
-(function(global, namespace, $){
+(function(global, namespace, session, $){
     
     "use strict";
     
@@ -12,6 +12,7 @@
 
     module.State = function(options) {
         options = options || {};
+        this.anonymous = options.anonymous || false;
         this.footer = ('footer' in options) ? options.footer : true;
         this.init = options.init ? options.init : module.noop;
         this.update = options.update ? options.update : module.noop;
@@ -21,6 +22,9 @@
         
         execute: function(page) {
             var executor = $.Deferred(), state = this;
+            if (this.anonymous && !session.hasUser()) {
+                this.anonymous();
+            }
             if (!this.footer) {
                 page.find(':jqmData(role=footer)').remove();
             }
@@ -43,4 +47,4 @@
         
     };
     
-})(window, munitia, jQuery);
+})(window, munitia, munitia.session, jQuery);

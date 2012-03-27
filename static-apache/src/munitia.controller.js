@@ -22,6 +22,7 @@
                 });
                 mobile.activePage.trigger('create');
                 notif.addClass('fade in');
+                mobile.silentScroll();
             });
         },
         
