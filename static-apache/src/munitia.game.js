@@ -59,6 +59,7 @@
                         content.find('#flickrsearch').change(function(){
                             var value =  $(this).val();
                             controller.showSpinner();
+                            imgresults.removeClass('in').addClass('out').empty();
                             session.getPosition().then(function(position){
                                 api.get('flickr_search', {
                                     lt: position.coords.latitude, 
@@ -69,7 +70,9 @@
                                     if (response && response.data.photos.total) {
                                         controller.render('flickrimgs', response.data.photos).
                                             then(function(flickrimgs){
-                                            imgresults.append(flickrimgs);
+                                            imgresults.append(flickrimgs)
+                                                .removeClass('out')
+                                                .addClass('fade in');
                                             page.trigger('create');
                                         });
                                     } else {
