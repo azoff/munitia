@@ -10,10 +10,9 @@
     stops = namespace.stops,
     states = namespace.states,
     
-    model = {}, 
-    instances = {},
-    
     module = namespace.game = {
+    
+        model: {},
         
         // picks the correct start state
         start: function() {
@@ -33,13 +32,10 @@
                 mobile.changePage('login');
             }
         },
-        
+
         // handles state change processing
         changeState: function(state, page) {            
-            if (!(state in instances)) {
-                instances[state] = new states.State(module.states[state]);
-            }
-            return instances[state].execute(page);
+            return states.getState(state).execute(page);
         },
         
         states: {
@@ -155,31 +151,6 @@
                     });
                     return renderer;
                 }                
-            },
-            
-            // this state asks the user to provide an alias
-            login: {
-                footer: false,
-                init: function(page) {
-                    // create the login form
-                    return controller.fill(page, {
-                        header: 'Enter Your Alias',
-                        content: controller.render('login')
-                    }).then(function(page, content){
-                        // bind a listener for login
-                        content.submit(function(){
-                            var alias = page.find('input'),
-                            user = users.fromAlias(alias.val()); 
-                            if (alias.length) {                             
-                                session.setUser(user);
-                                module.start(); // back to start   
-                            } else {
-                                controller.notify('Please provide a valid alias.');
-                            }
-                            return false; // don't submit
-                        });
-                    });
-                }
             },
             
             // renders questions for the current user

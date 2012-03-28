@@ -27,10 +27,10 @@
         },
         
         fromAlias: function(alias) {
-            return new User({
+            return alias ? new User({
                 alias: alias,
                 id: module.generateSessionId(alias)
-            });
+            }) : null;
         }
         
     };

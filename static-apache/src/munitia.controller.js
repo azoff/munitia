@@ -14,29 +14,8 @@
             mobile.hidePageLoadingMsg();
         },
         
-        notify: global.onerror = function(msg) {
-            module.render('notif', { msg: msg }).then(function(notif){
-                notif.insertAfter(mobile.activePage.find(':jqmData(role=header)'));
-                notif.find('a').click(function(){
-                    notif.remove();
-                });
-                mobile.activePage.trigger('create');
-                notif.addClass('fade in');
-                mobile.silentScroll();
-            });
-        },
-        
-        fill: function(page, options) {
-            if (options.header) {
-                page.find(':jqmData(role=header) h1').html(options.header);
-            }
-            if (options.content) {
-                options.content.then(function(content){
-                    page.find(':jqmData(role=content)').empty().append(content);
-                    page.trigger('create');
-                });
-            }
-            return $.when.apply($, [page, options.content]);
+        scroll: function(y) {
+            mobile.silentScroll(y);
         },
         
         getPage: function(id) {
