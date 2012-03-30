@@ -2,7 +2,7 @@
     
     "use strict";
     
-    var instances = {};
+    var instances = {},
     
     module = namespace.states = {
         
@@ -15,7 +15,7 @@
                 return instances[name];
             } else {
                 var url = '/src/states/state.' + name + '.js';
-                return instances[name] = new module.State(url);
+                return (instances[name] = new module.State(url));
             }
         },
         
@@ -50,12 +50,12 @@
                 state.header.children('h1').html(header);
             }
             if (template) {
-                job.push(controller.render(template, model).then(function(html){
+                jobs.push(controller.render(template, model).then(function(html){
                     state.content.empty().append(html);
                     state.page.trigger('create');
                 }));
             }            
-            return $.when.apply($, job);
+            return $.when.apply($, jobs);
         },
         
         notify: function(msg) {
@@ -79,8 +79,11 @@
                 state.footer = page.find(':jqmData(role=footer)');                
                 state.definition.then(function(definition){
                     var init = definition.init.call(state);
-                    if (init.then) { init.then(ready.resolve); }
-                    else { ready.resolve(); }
+                    if (init.then) { 
+                        init.then(state._ready.resolve); 
+                    } else { 
+                        state._ready.resolve(); 
+                    }
                 });
             }
             return state._ready.promise();
@@ -89,9 +92,11 @@
         execute: function(page) {
             var executor = $.Deferred(), state = this;             
             state.ready().then(function(){
-                var update = definition.update.call(state);
-                if (update.then) { update.then(executor.resolve); }
-                else { executor.resolve(); }
+                state.definition.then(function(definition){
+                    var update = definition.update.call(state);
+                    if (update.then) { update.then(executor.resolve); }
+                    else { executor.resolve(); }
+                });
             });
             return executor.promise();
         }
