@@ -22,6 +22,8 @@
         defineState: function(name, definition) {
             if (name in instances) {
                 return instances[name].define(definition);
+            } else {
+                return null;
             }
         }
         
@@ -39,6 +41,7 @@
             definition.init = definition.init ? definition.init : module.noop;
             definition.update = definition.update ? definition.update : module.noop;
             this.definition.resolve(definition);
+            return this;
         },
 
         fill: function(header, template, model) {

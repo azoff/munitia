@@ -1,18 +1,20 @@
 // this state allows the user to provide an alias
-(function(game, states, session){
+(function(game, users, states, session, $){
     
-    "use strict"
+    "use strict";
+    
+    var state;
     
     // create user or notify on error
-    function onsubmit(event) {
-        var user = users.fromAlias(this.alias.val());         
+    function createUser(event) {
+        var user = users.fromAlias(state.alias.val());         
         // create a user and restart game
         if (user) {                       
             session.setUser(user);
             game.start();
         // or notify on error
         } else {
-            this.notify('Please provide a valid alias.');
+            state.notify('Please provide a valid alias.');
         }
         // don't submit
         return false;
@@ -21,15 +23,15 @@
     // bind listeners for the login form
     function listen(state, form) {
         state.alias = form.find('#alias');
-        form.submit($.proxy(onsubmit, state));
+        form.submit(createUser);
     }
     
     // build the login form
     function init() {
-        this.filler = this.fill('Enter Your Alias', 'login');
-        return this.filler.then(listen);
+        state.filler = state.fill('Enter Your Alias', 'login');
+        return state.filler.then(listen);
     }
     
-    states.defineState('login', { init: init });
+    state = states.defineState('login', { init: init });
     
-})(munitia.game, munitia.states, munitia.session);
+})(munitia.game, munitia.users, munitia.states, munitia.session, jQuery);

@@ -88,32 +88,6 @@
                 }
             },
             
-            // locates the user's position and shows it on a map
-            geolocate: {
-                footer: false,
-                init: function(page) {
-                    return controller.fill(page, {
-                        content: controller.render('geo')
-                    });
-                },
-                update: function(page) {                 
-                    controller.fill(page, { header: 'Locating Your Device' });
-                    // try to get the user's position
-                    return session.getPosition().then(function(position){
-                        var coords = position.coords, img, src;                        
-                        controller.fill(page, { header: 'Device Found!' });
-                        page.find('.geo').removeClass('hidden');
-                        img = page.find('img');
-                        src = '//maps.googleapis.com/maps/api/staticmap?';
-                        src += 'sensor=true&zoom=13&markers=color:black%7Csize%7Ctiny|'; 
-                        src += coords.latitude + ',' + coords.longitude;
-                        src += '&size=' + page.width() + 'x320&center=';
-                        src += coords.latitude + ',' + coords.longitude;
-                        img.attr('src', src);
-                    });
-                }
-            },
-            
             // shows the applicable lines for the current position
             lines: {
                 init: function(page) {                            
@@ -238,52 +212,6 @@
                     }
                     
                     return listeners.promise();
-                }
-            },
-
-            // Adds the current user to a round, or creates one if the round does not exist
-            round: {
-                init: function(page) {
-                    return controller.fill(page, { 
-                        content: controller.render('round') 
-                    });
-                },
-                update: function(page) {
-                    var args = {},
-                    content = page.find('.round').removeClass('fade in'),
-                    // (4) shows the current round to the user
-                    show = $.Deferred().then(function(response){
-                        if (response.status === 200 && model.round.users) {
-                            var count = model.round.users.length,
-                            noun = count === 1 ? ' Participant' : ' Participants';
-                            controller.fill(page, { header: 'Round Joined!' });
-                            content.find('h3').html(model.line.prettyName());
-                            content.find('h4').html(count + noun);
-                            content.addClass('fade in');
-                        } else {
-                            controller.notify('Unable to add you to round.');
-                        }
-                    }),
-                    // (3) adds the current user to a round
-                    adder = $.Deferred().then(function(response){
-                        model.round = response.data[0];
-                        args.round_id = model.round._id;
-                        args.user_id = session.getUser().getId();
-                        api.get('add_to_round', args).then(show.resolve);
-                    }),
-                    // (2) creates a round, if necessary
-                    creator = $.Deferred().then(function(response){
-                        if (response && response.data && response.data.length) {
-                            adder.resolve(response);
-                        } else {
-                            api.get('create_round', args).success(adder.resolve);
-                        }
-                    });
-                    // (1) finds a round to put the current user in
-                    controller.fill(page, { header: 'Joining Round...' });
-                    args.stretch_id = model.stretchId;
-                    api.get('find_round', args).then(creator.resolve);                    
-                    return show.promise();
                 }
             }
             
