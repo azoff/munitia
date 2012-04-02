@@ -34,7 +34,10 @@
         api.get('find_stops_near', {
             lt: position.coords.latitude, 
             lg: position.coords.longitude
-        }).then(renderStops);
+        }).then(renderStops).fail(function(){
+            state.notify('Unable to connect to the game server.');
+            state.renderer.resolve();
+        });
     }
     
     function update() { 

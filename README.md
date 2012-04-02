@@ -13,5 +13,6 @@ You can then access the app at:
 
 To Do
 -----
-- Port node code to async
-- Port client code to modernizr
+- Finish contribution prototype
+- Persist model
+- Handle invalid state entry points

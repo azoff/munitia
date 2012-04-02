@@ -69,10 +69,12 @@
             var state = this;
             controller.render('notif', { msg: msg }).then(function(notif){
                 notif.insertAfter(state.header);
-                notif.find('a').click($.proxy(notif, 'remove'));
                 state.page.trigger('create');
                 notif.addClass('fade in');
                 controller.scroll();
+                notif.find('a').click(function(){
+                    notif.remove();
+                });
             });
         },
         
