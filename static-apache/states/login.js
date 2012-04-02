@@ -21,14 +21,14 @@
     }
     
     // bind listeners for the login form
-    function listen(state, form) {
+    function listen(form) {
         state.alias = form.find('#alias');
         form.submit(createUser);
     }
     
     // build the login form
     function init() {
-        state.setHeader('Enter Your Alias')
+        state.setHeader('Enter Your Alias');
         return state.setContent('login').then(listen);
     }
     

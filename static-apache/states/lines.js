@@ -1,5 +1,5 @@
 // shows the applicable lines for the current position
-(function(model, session, states, mobile, $){
+(function(model, api, stops, session, states, mobile, $){
     
     "use strict";
     
@@ -25,7 +25,7 @@
             // add the stops to the page
             state.setContent('stops', model).then(state.renderer.resolve);
         } else {
-            state.renderer.reject('Unable to find stops by you.')
+            state.renderer.reject('Unable to find stops by you.');
         }
     }
     
@@ -47,4 +47,4 @@
         init: init, update: update
     });
     
-})(munitia.game.model, munitia.stops, munitia.session, munitia.states, jQuery.mobile, jQuery);
+})(munitia.game.model, munitia.api, munitia.stops, munitia.session, munitia.states, jQuery.mobile, jQuery);

@@ -14,7 +14,7 @@
             if (name in instances) {
                 return instances[name];
             } else {
-                var url = '/src/states/state.' + name + '.js';
+                var url = '/states/' + name + '.js';
                 return (instances[name] = new module.State(url));
             }
         },
@@ -31,24 +31,34 @@
 
     module.State = function(url) {
         this.definition = $.Deferred();
-        $.ajax({ url: url, cache: true, type: 'script' });
+        this.notifier = $.proxy(this, 'notify');
+        $.ajax({ 
+            url: url, 
+            cache: true, 
+            type: 'GET', 
+            dataType: 'script' 
+        });
     };
     
     module.State.prototype = {
         
         define: function(definition) {
+            var state = this;
             definition = definition || {};
             definition.init = definition.init ? definition.init : module.noop;
             definition.update = definition.update ? definition.update : module.noop;
-            this.definition.resolve(definition);
+            global.setTimeout(function(){
+                state.definition.resolve(definition);
+            }, 1);
             return this;
         },
 
         setHeader: function(html) {
-            state.header.children('h1').html(header);
+            this.header.children('h1').html(html);
         },
         
         setContent: function(template, model) {
+            var state = this;
             return controller.render(template, model).then(function(html){
                 state.content.empty().append(html);
                 state.page.trigger('create');
@@ -76,10 +86,14 @@
                 state.footer = page.find(':jqmData(role=footer)');                
                 state.definition.then(function(definition){
                     var init = definition.init.call(state);
-                    if (init.then) { 
-                        init.then(state._ready.resolve); 
-                    } else { 
-                        state._ready.resolve(); 
+                    if (init) {
+                        if (init.fail) {                        
+                            init.fail(state.notifier);
+                        } if (init.always) { 
+                            init.always(state._ready.resolve); 
+                        }
+                    } else {
+                        state._ready.resolve();
                     }
                 });
             }
@@ -87,14 +101,19 @@
         },
         
         execute: function(page) {
-            var executor = $.Deferred(), state = this,
-            notifier = $.proxy(state, 'notify');             
-            state.ready().then(function(){
+            var executor = $.Deferred(), state = this;             
+            state.ready(page).then(function(){
                 state.definition.then(function(definition){
                     var update = definition.update.call(state);
-                    if (update.then) { update.then(executor.resolve); }
-                    else { executor.resolve(); }
-                    update.fail(notifier);
+                    if (update) {
+                        if (update.fail) {                        
+                            update.fail(state.notifier);
+                        } if (update.always) { 
+                            update.always(executor.resolve); 
+                        }
+                    } else { 
+                        executor.resolve(); 
+                    }
                 });
             });
             return executor.promise();

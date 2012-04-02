@@ -1,12 +1,13 @@
-(function(states, model, session, $){
+// renders questions for the current user
+(function(model, controller, api, states, session, $){
     
     "use strict";
     
     var state;
     
-    function selectAnswer() {
-        var selected = $(this).addClass('red');                                                        
-        selected.siblings().not(correct).remove();
+    function selectAnswer(event) {
+        var selected = $(event.target).addClass('red');                                                        
+        selected.siblings().not(state.correct).remove();
         state.correct.addClass('green');
         state.next.removeClass('hidden');
         model.question++;
@@ -17,16 +18,16 @@
         }
     }
     
-    function setComponents() {
+    function setup() {
         state.answers = state.content.find(':jqmData(role=listview)');
         state.prompt = state.content.find('h3');
-        state.img = content.find('img');
-        state.next = content.find(':jqmData(role=button)');
+        state.img = state.content.find('img');
+        state.next = state.content.find(':jqmData(role=button)');
         state.answers.on('click', 'li:not(.green,.red)', selectAnswer);
     }
     
     function init() { 
-        return state.setContent('question').then(setComponents);
+        return state.setContent('question').then(setup);
     }
     
     function renderNextQuestion() {
@@ -56,11 +57,12 @@
         $.each(answers, function(key, answer){
             var item = $('<li/>').html(answer).appendTo(state.answers);
             if (answer === question.answers.correct) { 
-                state.correct = answer;
+                state.correct = item;
             }
         }); 
         // enhance listview
         state.answers.listview('refresh');
+        state.renderer.resolve();
     }
     
     function setQuestions(response) {
@@ -82,10 +84,10 @@
     
     function update() { 
         state.renderer = $.Deferred();
-        controller.setHeader('Loading Question...');
+        state.setHeader('Loading Question...');
         state.next.addClass('hidden');
         if (model.questions) {
-            showQuestions();
+            renderNextQuestion();
         } else {
             session.getPosition().then(findQuestions);
         }        
@@ -96,6 +98,4 @@
         init: init, update: update
     });
     
-})(munitia.states, munitia.game.model, munitia.session, jQuery);
-
-// renders questions for the current user
+})(munitia.game.model, munitia.controller, munitia.api, munitia.states, munitia.session, jQuery);

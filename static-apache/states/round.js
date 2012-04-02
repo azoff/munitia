@@ -7,7 +7,7 @@
     var state;
     
     function init() { 
-        return state.setContent('round').then(function(state, round){
+        return state.setContent('round').then(function(round){
             state.round = round;
             state.line = round.children('h3');
             state.participants = round.children('h4');

@@ -1,49 +1,56 @@
-/*
 // allows the user to add a question
-contribute: {
-    anonymous: function() {
-        module.start();
-    },
-    init: function(page) {
-        return controller.fill(page, {
-            header: 'Submit A Question',
-            content: controller.render('contribute')
-        }).then(function(page, content){
-            var imgresults = page.find('#flickrimgs');
-            // load flickr results upon search
-            content.find('#flickrsearch').change(function(){
-                var value =  $(this).val();
-                controller.showSpinner();
-                imgresults.removeClass('in').addClass('out').empty();
-                session.getPosition().then(function(position){
-                    api.get('flickr_search', {
-                        lt: position.coords.latitude, 
-                        lg: position.coords.longitude,
-                        search_term: value, 
-                        radius: 5 
-                    }).then(function(response){
-                        if (response && response.data.photos.total) {
-                            controller.render('flickrimgs', response.data.photos).
-                                then(function(flickrimgs){
-                                imgresults.append(flickrimgs)
-                                    .removeClass('out')
-                                    .addClass('fade in');
-                                page.trigger('create');
-                            });
-                        } else {
-                            controller.notify('No results found for: ' + value);
-                        }
-                    }).always(function(){
-                        controller.hideSpinner();
-                    });
-                });
-            });
-            
-        });
-    },
-    update: function(page) {
-        page.find('form').get(0).reset();
-        page.find('#flickrimgs').empty();
+(function(states, session, api, controller, $){
+    
+    "use strict";
+    
+    var state;
+    
+    function insertImages(html){
+        state.imgResults.append(html).addClass('in');
+        state.page.trigger('create');
     }
-}
-*/
+    
+    function renderImages(response) {
+        if (response && response.data.photos.total) {
+            controller.render('flickrimgs', response.data.photos).then(insertImages);
+        } else {
+            state.notify('No results found for: ' + state.flickrSearch.val());
+        }
+    }
+    
+    function searchFlickr() {
+        controller.showSpinner();
+        state.imgResults.removeClass('in').empty();
+        session.getPosition().then(function(position){
+            api.get('flickr_search', {
+                lt: position.coords.latitude, 
+                lg: position.coords.longitude,
+                search_term: state.flickrSearch.val(), 
+                radius: 5 
+            }).then(renderImages)
+            .always(controller.hideSpinner);
+        });
+    }
+    
+    function setup(form) {
+        state.form = form;
+        state.imgResults = form.find('#flickrimgs');
+        state.flickrSearch = form.find('#flickrsearch');
+        state.flickrSearch.change(searchFlickr);
+    }
+    
+    function init() { 
+        state.setHeader('Submit A Question');
+        return state.setContent('contribute').then(setup);
+    }
+    
+    function update() { 
+        state.form.get(0).reset();
+        state.imgResults.empty();
+    }
+    
+    state = states.defineState('contribute', {
+        init: init, update: update
+    });
+    
+})(munitia.states, munitia.session, munitia.api, munitia.controller, jQuery);

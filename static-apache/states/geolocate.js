@@ -1,12 +1,12 @@
 // locates the user's position and shows it on a map
-(function(states){
+(function(states, session){
     
     "use strict";
     
     var state;
     
     function init() {
-        return state.setContent('geo').then(function(state, geo){
+        return state.setContent('geo').then(function(geo){
             state.geo = geo;
             state.map = geo.children('img');
         });
@@ -18,7 +18,8 @@
         url += 'sensor=true&zoom=13&markers=color:black%7Csize%7Ctiny|'; 
         url += coords.latitude + ',' + coords.longitude;
         url += '&size=' + state.page.width() + 'x320&center=';
-        src += coords.latitude + ',' + coords.longitude;
+        url += coords.latitude + ',' + coords.longitude;
+        return url;
     }
     
     function renderMap(position){
@@ -38,4 +39,4 @@
         init: init, update: update
     });
     
-})(munitia.states);
+})(munitia.states, munitia.session);
