@@ -28,8 +28,8 @@
     
     // build the login form
     function init() {
-        state.filler = state.fill('Enter Your Alias', 'login');
-        return state.filler.then(listen);
+        state.setHeader('Enter Your Alias')
+        return state.setContent('login').then(listen);
     }
     
     state = states.defineState('login', { init: init });

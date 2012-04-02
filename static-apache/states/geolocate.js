@@ -6,7 +6,7 @@
     var state;
     
     function init() {
-        return this.fill('', 'geo').then(function(state, geo){
+        return state.setContent('geo').then(function(state, geo){
             state.geo = geo;
             state.map = geo.children('img');
         });
@@ -22,14 +22,14 @@
     }
     
     function renderMap(position){
-        state.fill('Device Found!');        
+        state.setHeader('Device Found!');        
         state.geo.addClass('in');
         state.map.attr('src', mapUrl(position));
     }
     
     // gets users position and shows it on the map
     function update() {                 
-        state.fill('Locating Your Device');
+        state.setHeader('Locating Your Device');
         state.geo.removeClass('in');
         return session.getPosition().then(renderMap);
     }

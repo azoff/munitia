@@ -7,7 +7,7 @@
     var state;
     
     function init() { 
-        return state.fill('', 'round').then(function(state, round){
+        return state.setContent('round').then(function(state, round){
             state.round = round;
             state.line = round.children('h3');
             state.participants = round.children('h4');
@@ -18,13 +18,13 @@
         if (response.status === 200 && model.round.users) {
             var count = model.round.users.length,
             noun = count === 1 ? ' Participant' : ' Participants';
-            state.fill('Round Joined!');
+            state.setHeader('Round Joined!');
             state.line.html(model.line.prettyName());
             state.participants.html(count + noun);
             state.round.addClass('in');
             state.processor.resolve();
         } else {
-            state.notify('Unable to add you to round.');
+            state.processor.reject('Unable to add you to round.');
         }
     }
     
@@ -45,7 +45,7 @@
     
     function update() { 
         state.round.removeClass('in');
-        state.fill('Joining Round...');
+        state.setHeader('Joining Round...');
         state.processor = $.Deferred();
         state.args = { stretch_id: model.stretchId };
         api.get('find_round', state.args).then(createRound); 

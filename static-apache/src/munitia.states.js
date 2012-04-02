@@ -44,18 +44,15 @@
             return this;
         },
 
-        fill: function(header, template, model) {
-            var state = this, jobs = [state];
-            if (header) {
-                state.header.children('h1').html(header);
-            }
-            if (template) {
-                jobs.push(controller.render(template, model).then(function(html){
-                    state.content.empty().append(html);
-                    state.page.trigger('create');
-                }));
-            }            
-            return $.when.apply($, jobs);
+        setHeader: function(html) {
+            state.header.children('h1').html(header);
+        },
+        
+        setContent: function(template, model) {
+            return controller.render(template, model).then(function(html){
+                state.content.empty().append(html);
+                state.page.trigger('create');
+            });
         },
         
         notify: function(msg) {
@@ -90,12 +87,14 @@
         },
         
         execute: function(page) {
-            var executor = $.Deferred(), state = this;             
+            var executor = $.Deferred(), state = this,
+            notifier = $.proxy(state, 'notify');             
             state.ready().then(function(){
                 state.definition.then(function(definition){
                     var update = definition.update.call(state);
                     if (update.then) { update.then(executor.resolve); }
                     else { executor.resolve(); }
+                    update.fail(notifier);
                 });
             });
             return executor.promise();
