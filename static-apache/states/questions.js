@@ -21,7 +21,7 @@
     function setup() {
         state.answers = state.content.find(':jqmData(role=listview)');
         state.prompt = state.content.find('h3');
-        state.img = state.content.find('img');
+        state.img = state.content.find('.img');
         state.next = state.content.find(':jqmData(role=button)');
         state.answers.on('click', 'li:not(.green,.red)', selectAnswer);
     }
@@ -41,9 +41,11 @@
         state.prompt.html(question.question);
         // set image, if any
         if (question.img_url) {
-            state.img.show(0).attr('src', question.img_url);
+            state.img.addClass('test').css({
+                backgroundImage: 'url("'+question.img_url+'")',
+            }).parent().addClass('active');
         } else {
-            state.img.hide(0);
+            state.img.parent().removeClass('active');
         }
         // put answers into a list
         $.each(question.answers, function(key, value){

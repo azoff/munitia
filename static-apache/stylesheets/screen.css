@@ -1,12 +1,12 @@
 body { 
-    background-color: #f0f0f0;
-    background-image: url("/images/logo.png"), -moz-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
-    background-image: url("/images/logo.png"), -webkit-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
-    background-image: url("/images/logo.png"), -o-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
-    background-image: url("/images/logo.png"), -ms-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
-    background-image: url("/images/logo.png"), radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%);
-    background-position: center center;
-    background-repeat: no-repeat;
+    background-color: #f0f0f0 !important;
+    background-image: url("/images/logo.png"), -moz-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+    background-image: url("/images/logo.png"), -webkit-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+    background-image: url("/images/logo.png"), -o-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+    background-image: url("/images/logo.png"), -ms-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+    background-image: url("/images/logo.png"), radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
 }
 
 [data-role=page] { 
@@ -40,7 +40,9 @@ body {
 
 .question { text-align: center; }
 .question h3 { margin: 0 0 1em; }
-.question img { margin: 0 auto; }
+.question .img-container { display: none; }
+.question .active.img-container { display: block; }
+.question .img { margin: 10px auto; width: 90%; height: 240px; background: none center center no-repeat; }
 .question [data-role=listview] {
     margin: 1em 0;
 }

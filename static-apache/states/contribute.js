@@ -18,25 +18,58 @@
         }
     }
     
-    function searchFlickr() {
-        controller.showSpinner();
+    function clearFlickr() {
         state.imgResults.removeClass('in').empty();
+    }
+    
+    function searchFlickr() {
+        if (state.searching) { clearTimeout(state.searching); }
+        state.searching = setTimeout(function(){
+            controller.showSpinner();
+            clearFlickr();
+            session.getPosition().then(function(position){
+                api.get('flickr_search', {
+                    lt: position.coords.latitude, 
+                    lg: position.coords.longitude,
+                    search_term: state.flickrSearch.val(), 
+                    radius: 5 
+                }).then(renderImages)
+                .always(controller.hideSpinner);
+            });            
+        }, 500);
+    }
+    
+    function resetForm(response) {
+        if (!response || response.error) {
+            var error = response ? response.error : 'Unable to connect to server.';
+            state.notify('Unable to add question! ' + error);
+        } else {
+            state.notify('Question Added!');
+            clearFlickr();
+            state.form.get(0).reset();            
+        }
+    }
+    
+    function createQuestion() {
+        controller.showSpinner();
         session.getPosition().then(function(position){
-            api.get('flickr_search', {
+            var geo = $.param({
                 lt: position.coords.latitude, 
-                lg: position.coords.longitude,
-                search_term: state.flickrSearch.val(), 
-                radius: 5 
-            }).then(renderImages)
-            .always(controller.hideSpinner);
+                lg: position.coords.longitude
+            });
+            var data = [state.form.serialize(), geo].join('&');
+            api.get('create_question', data)
+                .then(resetForm)
+                .always(controller.hideSpinner);
         });
+        return false;
     }
     
     function setup(form) {
-        state.form = form;
+        state.form = form.submit(createQuestion);
         state.imgResults = form.find('#flickrimgs');
         state.flickrSearch = form.find('#flickrsearch');
-        state.flickrSearch.change(searchFlickr);
+        state.flickrSearch.keyup(searchFlickr);
     }
     
     function init() { 
