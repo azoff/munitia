@@ -4,9 +4,9 @@ import os
 import pymongo
 import sys
 
-def import_routes(filename mongo_pw):
+def import_routes(filename, mongo_host, mongo_pw):
     """Imports transit routes from filename into MongoDB."""
-    connection = pymongo.Connection('mongodb://root:%s@149f8b26.dotcloud.com:9072'%mongo_pw)
+    connection = pymongo.Connection('mongodb://root:%s@%s:27017'%(mongo_pw, mongo_host))
     db = connection.munitia
     print db
     print db.stops
@@ -38,7 +38,7 @@ def usage():
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:p:", ["filename="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:p:h:", ["filename="])
     except getopt.GetoptError, err:
         # print help info and exit
         print str(err)
@@ -47,17 +47,20 @@ def main():
 
     filename = None
     mongo_pw = ''
+    mongo_host = 'localhost'
     for o, a in opts:
         if o in ("-f", "--filename"):
             filename = a
         if o in ("-p"):
             mongo_pw = a
+        if o in ("-h"):
+            mongo_host = a
 
     if filename == None:
         usage()
         sys.exit(3)
 
-    import_routes(filename, mongo_pw)
+    import_routes(filename, mongo_host, mongo_pw)
 
 if __name__ == '__main__':
     main()
