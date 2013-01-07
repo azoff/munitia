@@ -1,8 +1,8 @@
 /*global console:true, process: true, require:true, exports:true */
 var
- url = require('url'),
+url = require('url'),
 http = require('http'),
-utils = require('utils'),
+utils = require('src/utils'),
 
 ENABLE_ACCESS_LOGGING = true,
 

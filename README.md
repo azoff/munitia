@@ -3,13 +3,21 @@ Munitia
 
 Running Locally
 ---------------
-To run locally, you will need to provide an "environment.json" file as the only argument to the app entry point. This file mimics the data provided by the app in production. By default, git will ignore the file so that private data is not exposed in the repository. Once this is set up, you can run the API server locally by running the following command:
+To run locally, you will an "environment.json" file in the project root directory. This file should contain the basic
+credentials to connect to a mongodb server. Once this is set up, you can run the API server locally by running the
+following command:
 
-`node ./api-node/main.js path/to/environment.json`
+```sh
+cd api-node ; make
+```
 
 You can then access the app at:
 
-`http://localhost:8080`
+```
+http://localhost:8080
+```
+
+
 
 To Do
 -----

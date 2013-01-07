@@ -1,7 +1,11 @@
 {
-	"name": "api",
-	"version": "1.0.0",
+	"name":        "munitia-api",
+	"description": "The API for Munitia",
+	"version":     "0.0.1",
+	"author":      "Jonathan Azoff <jon@azoffdesign.com>",
 	"dependencies": {
-		"mongodb": "0.9.6-7"
-	}
+		"mongodb":    "1.2.7",
+		"supervisor": "latest"
+	},
+	"engine": "node >= 0.8.16"
 }

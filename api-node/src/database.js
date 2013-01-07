@@ -1,6 +1,6 @@
 /*global require: true, exports: true, console: true, process: true */
 var 
-utils = require('utils'),
+utils = require('src/utils'),
 mongodb = require('mongodb');
 
 function Database(host, port, database, username, password) {    
