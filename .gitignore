@@ -3,5 +3,6 @@
 node_modules
 environment.json
 .DS_Store
+tools/data
 *~
 *.pyc

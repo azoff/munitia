@@ -1,11 +1,43 @@
 #!/bin/bash
 
-# Imports transit data into MongoDB.  Default mongo host is localhost 
+if [ -z "$1" ] ; then
+	HOST=localhost
+else
+	HOST=$1
+fi
+
+PASS="$2"
+
+if [ -z $DATA ] ; then
+	DATA=data
+else
+	DATA=$3
+fi
+
+# download the data
+#mkdir $DATA
+#cd data && \
+#curl -O https://dl.dropbox.com/s/cwmcai0bwxg95mz/google_transit.zip && \
+#unzip google_transit.zip && \
+#rm google_transit.zip && \
+#cd ..
+
+# install pymongo
+sudo easy_install pymongo
+
+
+# Imports transit data into MongoDB.  Default mongo host is localhost
 # add -h *host* for most commands
-python import_stops.py -p zoezilla -h localhost -f ../data/stops.txt 
-python import_routes.py -p zoezilla -h localhost -f ../data/routes.txt 
-python import_stop_times.py -p zoezilla -h localhost -f ../data/stop_times.txt 
-python import_trips.py -p zoezilla -f ../data/trips.txt 
-python lines_to_stops.py ../data/routes.txt ../data/trips.txt ../data/stop_times.txt localhost zoezilla
-python push_next_stops.py ../data/routes.txt ../data/trips.txt ../data/stop_times.txt localhost zoezilla
+echo "python import_stops.py      -p $PASS -h $HOST -f $DATA/stops.txt"
+python import_stops.py      -p $PASS -h $HOST -f $DATA/stops.txt
+echo "python import_routes.py     -p $PASS -h $HOST -f $DATA/routes.txt"
+python import_routes.py     -p $PASS -h $HOST -f $DATA/routes.txt
+echo "python import_stop_times.py -p $PASS -h $HOST -f $DATA/stop_times.txt"
+python import_stop_times.py -p $PASS -h $HOST -f $DATA/stop_times.txt
+echo "python import_trips.py      -p $PASS -h $HOST -f $DATA/trips.txt"
+python import_trips.py      -p $PASS -h $HOST -f $DATA/trips.txt
+echo "python lines_to_stops.py    ../data/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS"
+python lines_to_stops.py    ../data/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS
+echo "python push_next_stops.py   ../data/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS"
+python push_next_stops.py   ../data/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS
 
