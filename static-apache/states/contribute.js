@@ -22,21 +22,25 @@
 		state.imgResults.removeClass('in').empty();
 	}
 
-	function searchFlickr() {
+	function searchFlickr(event) {
 		if (state.searching) { clearTimeout(state.searching); }
-		state.searching = setTimeout(function(){
-			controller.showSpinner();
+		if ($.trim(state.flickrSearch.val()).length > 0) {
+			state.searching = setTimeout(function(){
+				controller.showSpinner();
+				clearFlickr();
+				session.getPosition().then(function(position){
+					api.get('flickr_search', {
+						lt: position.coords.latitude,
+						lg: position.coords.longitude,
+						search_term: state.flickrSearch.val(),
+						radius: 5
+					}).then(renderImages)
+						.always(controller.hideSpinner);
+				});
+			}, 500);
+		} else {
 			clearFlickr();
-			session.getPosition().then(function(position){
-				api.get('flickr_search', {
-					lt: position.coords.latitude,
-					lg: position.coords.longitude,
-					search_term: state.flickrSearch.val(),
-					radius: 5
-				}).then(renderImages)
-				.always(controller.hideSpinner);
-			});
-		}, 500);
+		}
 	}
 
 	function resetForm(response) {
@@ -69,7 +73,7 @@
 		state.form = form.submit(createQuestion);
 		state.imgResults = form.find('#flickrimgs');
 		state.flickrSearch = form.find('#flickrsearch');
-		state.flickrSearch.keyup(searchFlickr);
+		state.flickrSearch.on('change keyup', searchFlickr);
 	}
 
 	function init() {

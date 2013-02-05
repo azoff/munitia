@@ -70,3 +70,12 @@ form [role=heading] {
 	font-weight: bold;
 	font-size: 18px;
 }
+
+.ui-input-search .ui-input-clear {
+	margin: -19px -1px 0 0;
+	height: 35px;
+}
+
+.ui-input-search .ui-input-clear .ui-icon {
+	margin-top: -11px !important;
+}
