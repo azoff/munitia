@@ -31,11 +31,19 @@
 	}
 
 	function renderNextQuestion() {
-		var question = model.questions[model.question],
-		listview = state.answers.empty(),
-		size = model.questions.length,
-		index = model.question + 1,
-		answers = [];
+
+		var question = model.questions[model.question];
+		var size = model.questions.length;
+		var index = model.question + 1;
+		var answers = [];
+
+		state.answers.empty();
+
+		if (!question) {
+			state.renderer.reject('No more questions :(');
+			return;
+		}
+
 		state.setHeader('Question ' + index + ' of ' + size);
 		// set question prompt
 		state.prompt.html(question.question);

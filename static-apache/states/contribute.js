@@ -73,7 +73,7 @@
 		state.form = form.submit(createQuestion);
 		state.imgResults = form.find('#flickrimgs');
 		state.flickrSearch = form.find('#flickrsearch');
-		state.flickrSearch.on('change keyup', searchFlickr);
+		state.flickrSearch.keyup(searchFlickr);
 	}
 
 	function init() {

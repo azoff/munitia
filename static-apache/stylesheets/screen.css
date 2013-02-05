@@ -79,3 +79,18 @@ form [role=heading] {
 .ui-input-search .ui-input-clear .ui-icon {
 	margin-top: -11px !important;
 }
+
+#flickrimgs .ui-radio {
+	float: left;
+	width: auto;
+	clear: none;
+}
+
+#flickrimgs img {
+	height: 71px;
+	width:  71px;
+}
+
+#flickrimgs input {
+	visibility: hidden;
+}
