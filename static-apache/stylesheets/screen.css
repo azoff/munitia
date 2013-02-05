@@ -1,41 +1,41 @@
 body { 
-    background-color: #f0f0f0 !important;
-    background-image: url("/images/logo.png"), -moz-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
-    background-image: url("/images/logo.png"), -webkit-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
-    background-image: url("/images/logo.png"), -o-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
-    background-image: url("/images/logo.png"), -ms-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
-    background-image: url("/images/logo.png"), radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
+	background-color: #f0f0f0 !important;
+	background-image: url("/images/logo.png"), -moz-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+	background-image: url("/images/logo.png"), -webkit-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+	background-image: url("/images/logo.png"), -o-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+	background-image: url("/images/logo.png"), -ms-radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+	background-image: url("/images/logo.png"), radial-gradient(50% 50%, circle cover, #f0f0f0, #aaa 100%) !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
 }
 
 [data-role=page] { 
-    background: none transparent; 
+	background: none transparent;
 }
 
 .hidden { 
-    opacity: 0; 
+	opacity: 0;
 }
 
 .map { 
-    display: block; 
-    width: 100%; 
-    max-width: 640px !important; 
-    height: 320px; 
-    margin: 0 auto; 
+	display: block;
+	width: 100%;
+	max-width: 640px !important;
+	height: 320px;
+	margin: 0 auto;
 }
 
 .round h3, .round h4 {
-    text-align: center;
+	text-align: center;
 }
 
 .notif [data-role=button] {
-    float: right;
-    margin-top: 0.3em;
+	float: right;
+	margin-top: 0.3em;
 }
 
 .notif h3 {
-    margin: 0.6em 0 0;
+	margin: 0.6em 0 0;
 }
 
 .question { text-align: center; }
@@ -44,53 +44,29 @@ body {
 .question .active.img-container { display: block; }
 .question .img { margin: 10px auto; width: 90%; height: 240px; background: none center center no-repeat; }
 .question [data-role=listview] {
-    margin: 1em 0;
+	margin: 1em 0;
 }
 .question li.red {
-    background: red;
-    color: white;
+	background: red;
+	color: white;
 }
 .question li.green {
-    background: green;
-    color: white;
+	background: green;
+	color: white;
 }
 
 form {
-    display: block;
-    padding: 15px !important;
+	display: block;
+	padding: 15px !important;
 }
 form .ui-input-text {
-    margin-bottom: 0.5em;
+	margin-bottom: 0.5em;
 }
 form .ui-btn {
-    margin-top: 1em;
+	margin-top: 1em;
 }
 
 form [role=heading] {
-    font-weight: bold;
-    font-size: 18px;
-}
-
-#flickrimgs {
-    margin-top: 1em;
-}
-
-#flickrimgs [data-role=button] {
-    overflow: hidden;
-}
-
-#flickrimgs [data-role=button] input {
-    visibility: hidden;
-}
-
-#flickrimgs label {
-    height: 240px;
-    width: 240px;
-    border: none 0;
-    background: none scroll no-repeat left center transparent;
-    position: relative;
-}
-
-#flickrimgs label .ui-btn-inner {
-    height: 9px;
+	font-weight: bold;
+	font-size: 18px;
 }

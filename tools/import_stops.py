@@ -30,6 +30,8 @@ def import_stops(filename, mongo_host, mongo_pw):
             print db.stops.insert({"stop_id" : stop_id, "name" : name, "loc" : [float(long), float(lat)]})
         elif len(splitted) != 0:
             print 'Badly formatted line, expected 7 fields: %s'%line
+    db.stops.ensureIndex({loc:"2d"})
+    db.questions.ensureIndex({loc:"2d"})
     print 'inserted %d stops'%count
 
 def usage():
