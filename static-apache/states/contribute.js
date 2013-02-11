@@ -35,7 +35,7 @@
 						search_term: state.flickrSearch.val(),
 						radius: 5
 					}).then(renderImages)
-						.always(controller.hideSpinner);
+					.always(controller.hideSpinner);
 				});
 			}, 500);
 		} else {
@@ -69,9 +69,28 @@
 		return false;
 	}
 
+	function toggleRadios(event) {
+		var input = $(event.currentTarget);
+		if (input.prop('checked')) {
+			input.parent().siblings().slideUp();
+		} else {
+			input.parent().siblings().slideDown();
+		}
+	}
+
+	function checkRadios(event) {
+		var input = $(event.currentTarget).children('input');
+		input.prop('checked', !input.prop('checked'))
+			.trigger('change')
+			.checkboxradio('refresh');
+		return false;
+	}
+
 	function setup(form) {
 		state.form = form.submit(createQuestion);
-		state.imgResults = form.find('#flickrimgs');
+		state.imgResults = form.find('#flickrimgs')
+			.on('change', '[type=radio]', toggleRadios)
+			.on('click',  '.ui-radio', checkRadios);
 		state.flickrSearch = form.find('#flickrsearch');
 		state.flickrSearch.keyup(searchFlickr);
 	}

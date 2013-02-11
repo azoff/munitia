@@ -81,14 +81,12 @@ form [role=heading] {
 }
 
 #flickrimgs .ui-radio {
-	float: left;
-	width: auto;
-	clear: none;
+	width: 100%;
 }
 
 #flickrimgs img {
-	height: 71px;
-	width:  71px;
+	margin: 0 auto;
+	display: block;
 }
 
 #flickrimgs input {
