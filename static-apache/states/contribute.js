@@ -5,52 +5,84 @@
 
 	var state;
 
-	function insertImages(html){
-		state.imgResults.append(html).addClass('in');
-		state.page.trigger('create');
-	}
+	function renderResults(results, response) {
 
-	function renderImages(response) {
-		if (response && response.data.photos.total) {
-			controller.render('flickrimgs', response.data.photos).then(insertImages);
-		} else {
-			state.notify('No results found for: ' + state.flickrSearch.val());
+		if (!response) {
+			return state.notify('Error communicating with the server');
 		}
+
+		if (response.error) {
+			return state.notify(response.error);
+		}
+
+		if (!response.data) {
+			return state.notify('No response returned from server');
+		}
+
+		controller.render(results.attr('id'), response.data).then(function(html){
+			results.append(html).addClass('in');
+			state.page.trigger('create');
+		});
+
+		return true;
+
 	}
 
-	function clearFlickr() {
-		state.imgResults.removeClass('in').empty();
+	function enableSearch(input, spinner) {
+		input.textinput('enable');
+		if (spinner) { controller.hideSpinner(); }
 	}
 
-	function searchFlickr(event) {
-		if (state.searching) { clearTimeout(state.searching); }
-		if ($.trim(state.flickrSearch.val()).length > 0) {
-			state.searching = setTimeout(function(){
-				controller.showSpinner();
-				clearFlickr();
+	function disableSearch(input, spinner) {
+		input.textinput('disable');
+		if (spinner) { controller.showSpinner(); }
+	}
+
+	function search(event) {
+
+		var input   = $(event.target);
+		var results = input.parent().next('.search-results');
+		var query   = $.trim(input.val());
+
+		if (query === input.data('last')) { return; }
+		else { input.data('last', query); }
+
+		if (input.data('timeout')) { clearTimeout(input.data('timeout')); }
+
+		if (query.length > 0) {
+			input.data('timeout', setTimeout(function(){
+				results.removeClass('in').empty();
+				disableSearch(input, true);
 				session.getPosition().then(function(position){
-					api.get('flickr_search', {
+					api.get(input.attr('id'), {
 						lt: position.coords.latitude,
 						lg: position.coords.longitude,
-						search_term: state.flickrSearch.val(),
-						radius: 5
-					}).then(renderImages)
-					.always(controller.hideSpinner);
+						q: query
+					}).then(function(response){
+						renderResults(results, response);
+					}).always(function(){
+						enableSearch(input, true);
+					});
 				});
-			}, 500);
+			}, 750));
 		} else {
-			clearFlickr();
+			results.removeClass('in').empty();
 		}
+
 	}
 
-	function resetForm(response) {
+	function resetForm() {
+		state.searchResults.removeClass('in').empty();
+		state.form.get(0).reset();
+	}
+
+	function checkSubmission(response) {
 		if (!response || response.error) {
 			var error = response ? response.error : 'Unable to connect to server.';
 			state.notify('Unable to add question! ' + error);
 		} else {
 			state.notify('Question Added!');
-			clearFlickr();
-			state.form.get(0).reset();
+			resetForm();
 		}
 	}
 
@@ -63,7 +95,7 @@
 			});
 			var data = [state.form.serialize(), geo].join('&');
 			api.get('create_question', data)
-				.then(resetForm)
+				.then(checkSubmission)
 				.always(controller.hideSpinner);
 		});
 		return false;
@@ -87,12 +119,12 @@
 	}
 
 	function setup(form) {
-		state.form = form.submit(createQuestion);
-		state.imgResults = form.find('#flickrimgs')
-			.on('change', '[type=radio]', toggleRadios)
-			.on('click',  '.ui-radio', checkRadios);
-		state.flickrSearch = form.find('#flickrsearch');
-		state.flickrSearch.keyup(searchFlickr);
+		state.form           = form.submit(createQuestion);
+		state.searchResults  = form.find('.search-results')
+									.on('change', '[type=radio]', toggleRadios)
+									.on('click',  '.ui-radio', checkRadios);
+		form.find('.search-input').on('change keyup', search);
+
 	}
 
 	function init() {
@@ -100,13 +132,8 @@
 		return state.setContent('contribute').then(setup);
 	}
 
-	function update() {
-		state.form.get(0).reset();
-		state.imgResults.empty();
-	}
-
 	state = states.defineState('contribute', {
-		init: init, update: update
+		init: init, update: resetForm
 	});
 
 })(munitia.states, munitia.session, munitia.api, munitia.controller, jQuery);

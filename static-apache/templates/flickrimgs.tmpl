@@ -1,6 +1,6 @@
-{{each(i, img) photo}}
+{{each(i, photo) photos.photo}}
 	<label for="img-url-${i}">
-		<img src="http://farm${img.farm}.static.flickr.com/${img.server}/${img.id}_${img.secret}_m.jpg" />
+		<img src="http://farm${photo.farm}.static.flickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg" />
 	</label>
-	<input type="radio" name="img_url" id="img-url-${i}" value="http://farm${img.farm}.static.flickr.com/${img.server}/${img.id}_${img.secret}_m.jpg" />
+	<input type="radio" name="img_url" id="img-url-${i}" value="http://farm${photo.farm}.static.flickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg" />
 {{/each}}

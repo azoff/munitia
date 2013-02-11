@@ -80,15 +80,23 @@ form [role=heading] {
 	margin-top: -11px !important;
 }
 
-#flickrimgs .ui-radio {
+.control-group {
+	margin-bottom: 2em !important;
+}
+
+.search-results {
+	margin-bottom: 0.5em;
+}
+
+.search-results .ui-radio {
 	width: 100%;
+}
+
+.search-results input {
+	visibility: hidden;
 }
 
 #flickrimgs img {
 	margin: 0 auto;
 	display: block;
-}
-
-#flickrimgs input {
-	visibility: hidden;
 }

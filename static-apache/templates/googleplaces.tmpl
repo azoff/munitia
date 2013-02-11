@@ -1,0 +1,5 @@
+{{each(i, result) results}}
+	<label for="place-geo-${i}">${result.name}<br/><small>${result.vicinity}</small></label>
+	<input type="radio" name="place_geo" id="place-geo-${i}"
+		value="${result.geometry.location.lat},${result.geometry.location.lng}" />
+{{/each}}

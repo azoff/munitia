@@ -1,5 +1,5 @@
 <form class="ui-corner-all ui-body ui-body-c">
-	<fieldset data-role="controlgroup">
+	<fieldset class="control-group" data-role="controlgroup">
 		<legend>Required Fields</legend>
 		<label for="question">Enter your question</label>
 		<input type="text" id="question" name="question" placeholder="e.g. What building is this?" required />
@@ -8,15 +8,18 @@
 		<label for="wrong0">Enter a wrong answer</label>
 		<input type="text" id="wrong0" name="wrong0" placeholder="e.g. Civic Center" required />
 	</fieldset>
-	<fieldset data-role="controlgroup">
+	<fieldset class="control-group" data-role="controlgroup">
 		<legend>Optional Fields</legend>
 		<label for="wrong1">Enter a wrong answer</label>
-		<input type="text" id="wrong1" name="wrong1" placeholder="e.g. Treasury Department" />
+		<input data-theme="b" type="text" id="wrong1" name="wrong1" placeholder="e.g. Treasury Department" />
 		<label for="wrong2">Enter a wrong answer</label>
 		<input type="text" id="wrong2" name="wrong2" placeholder="e.g. Supreme Court" />
-		<label for="flickrsearch">Add an image</label>
-		<input type="search" id="flickrsearch" placeholder="Search Flickr images..." />
-		<div id="flickrimgs" class="hidden fade ui-body ui-body-a ui-corner-all ui-grid-c"></div>
+		<label for="search_google_places">Attach a place</label>
+		<input id="search_google_places" class="search-input" type="search" placeholder="Search places..." />
+		<div id="googleplaces" class="search-results hidden fade ui-body ui-body-a ui-corner-all ui-grid-c"></div>
+		<label for="search_flickr_imgs">Attach a photo</label>
+        <input id="search_flickr_imgs" class="search-input" type="search" placeholder="Search photos..." />
+		<div id="flickrimgs" class="search-results hidden fade ui-body ui-body-a ui-corner-all ui-grid-c"></div>
 	</fieldset>
 	<button type="submit">Submit Answer</button>
 </form>

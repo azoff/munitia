@@ -106,22 +106,28 @@ ApiServer.prototype = {
 			console.log(status, body);
 		}
 	},
+
 	_validate_args:function (args, required_args) {
-		if (!args) return required_args.join(' ');
-		for (required in required_args) {
-			if (!args.hasOwnProperty(required)) {
-				return required;
-			}
+		var missing = [];
+		if (!args) {
+			return required_args.join(' ');
 		}
-		return 0;
+		required_args.forEach(function(required_arg){
+			if (!args.hasOwnProperty(required_arg)) {
+				missing.push(required_arg);
+			}
+		});
+		return missing.join('');
 	},
+
 	_add_optional_properties:function (source, target, optionalProperties) {
-		for (propName in optionalProperties) {
-			if (source.hasOwnProperty(optionalProperties[propName])) {
-				target[optionalProperties[propName]] = source[optionalProperties[propName]];
+		optionalProperties.forEach(function(optionalProperty){
+			if (source.hasOwnProperty(optionalProperty)) {
+				target[optionalProperty] = source[optionalProperty];
 			}
-		}
+		});
 	},
+
 	user:function (request, response, args) {
 		this._respond(request, response, {
 			user_id:1
@@ -480,11 +486,11 @@ ApiServer.prototype = {
 	},
 	gps_log:function (request, response, args) {
 		var server = this;
-		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'user_id'])) != 0) {
+		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'user_id'])) != '') {
 			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:missing_arg + ' required'
+				msg:    missing_arg + ' required',
+				error: 'Bad Request',
+				status: 403
 			});
 			return;
 		}
@@ -515,7 +521,7 @@ ApiServer.prototype = {
 	},
 	gps_points:function (request, response, args) {
 		var server = this;
-		if ((missing_arg = this._validate_args(args, ['name'])) != 0) {
+		if ((missing_arg = this._validate_args(args, ['name'])) != '') {
 			this._respond(request, response, {
 				error:'Bad Request',
 				status:403,
@@ -557,44 +563,50 @@ ApiServer.prototype = {
 		}
 	},
 	create_question:function (request, response, args) {
-		var server = this;
-		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'question', 'correct', 'wrong0'])) != 0) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:missing_arg + ' required'
+		var server  = this;
+		var missing = this._validate_args(args, ['lt', 'lg', 'question', 'correct', 'wrong0']);
+		if (missing.length) {
+			return this._respond(request, response, {
+				error: 'Bad Request',
+				status: 403,
+				msg: missing + ' required'
 			});
-			return;
 		}
 		var answers = {
 			correct:args.correct,
 			wrong0:args.wrong0
 		};
 		this._add_optional_properties(args, answers, ['wrong1', 'wrong2']);
+		// if we got a google place hit, override the user lat/long
+		if (args.place_geo) {
+			var loc = args.place_geo.split(',');
+			args.lt = loc[0];
+			args.lg = loc[1];
+		}
 		var question_obj = {
-			loc:[parseFloat(args.lg, 10), parseFloat(args.lt, 10)],
+			loc: [parseFloat(args.lg), parseFloat(args.lt)],
 			question:args.question,
 			answers:answers
 		};
 		this._add_optional_properties(args, question_obj, ['user_id', 'pack_id', 'img_url']);
 		server._database.insert({
-				collection:'questions',
-				docs:[question_obj]
-			},
-			function (error, results) {
-				console.log('create error ', error);
-				console.log('results ', results);
-				if (results.length > 0) {
-					server._respondwrap(request, response, results);
-				} else {
-					// Shouldn't happen!
-					console.error('Inserting question failed:', question_obj);
-					server._respond(request, response, {
-						error:'Inserting question failed.',
-						status:500
-					});
-				}
-			});
+			collection:'questions',
+			docs:[question_obj]
+		}, function (error, results) {
+			console.log('create error ', error);
+			console.log('results ', results);
+			if (results.length > 0) {
+				server._respondwrap(request, response, results);
+			} else {
+				// Shouldn't happen!
+				console.error('Inserting question failed:', question_obj);
+				server._respond(request, response, {
+					error:'Inserting question failed.',
+					status:500
+				});
+			}
+		});
+		return false;
 	},
 	delete_entry:function (request, response, args) {
 		var server = this;
@@ -662,7 +674,7 @@ ApiServer.prototype = {
 	},
 	find_questions_in_bounding_box:function (request, response, args) {
 		var server = this;
-		if ((missing_arg = this._validate_args(args, ['top_left_lg', 'top_left_lt', 'bottom_right_lg', 'bottom_right_lt'])) != 0) {
+		if ((missing_arg = this._validate_args(args, ['top_left_lg', 'top_left_lt', 'bottom_right_lg', 'bottom_right_lt'])) != '') {
 			this._respond(request, response, {
 				error:'Bad Request',
 				status:403,
@@ -782,96 +794,95 @@ ApiServer.prototype = {
 				server._respondwrap(request, response, results);
 			});
 	},
-	flickr_search:function (request, response, args) {
-		var server = this;
-		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'radius', 'search_term'])) != 0) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:missing_arg + ' required'
+
+	search_google_places: function(request, response, args) {
+
+		var radius    = 10000;
+		var server    = this;
+		var missing   = this._validate_args(args, ['lt', 'lg', 'q']);
+
+		function onError(error, status, msg) {
+			return server._respond(request, response, {
+				msg:    msg,
+				error:  error,
+				status: status
 			});
-			return;
 		}
-		var path = "/services/rest/?method=flickr.photos.search&" +
-			"api_key=" + this._config._conf.munitia_flickr_api_key + "&" +
-			"text=" + encodeURIComponent(args.search_term) + "&" +
-			"safe_search=1&" +
-			// 1 is "safe"
-			"license=1,2,3,4,5,6&" +
-			// creative commons varieties
-			"content_type=1&" +
-			// 1 is "photos only"
-			"sort=relevance&" +
-			// another good one is "interestingness-desc"
-			"lat=" + args.lt + "&" +
-			"long=" + args.lg + "&" +
-			"radius=" + args.radius + "&" +
-			"format=json&" +
-			"nojsoncallback=1&" +
-			"per_page=20";
-		console.log(path);
-		http.get({
-				host:'api.flickr.com',
-				path:path
-			},
-			function (res) {
-				var data = '';
-				res.on('data',
-					function (chunk) {
-						data += chunk;
-					});
-				res.on('end',
-					function () {
-						console.error('data' + data);
-						var results = JSON.parse(data);
-						server._respondwrap(request, response, results);
-					});
-			}).on('error',
-			function (e) {
-				console.error(e);
-			});
-	},
-	google_places_search:function (request, response, args) {
-		var server = this;
-		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'radius', 'search_term'])) != 0) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:missing_arg + ' required'
-			});
-			return;
+
+		if (missing.length > 0) {
+			return onError(403, 'Bad Request', missing + ' required');
 		}
-		var path = "/maps/api/place/search/json?location=" + args.lt + "," + args.lg + "&radius=" + args.radius + "&name=" + encodeURIComponent(args.search_term) + "&sensor=false&key=" + this._config._conf.munitia_google_maps_api_key;
-		console.log(path);
-		var https = require('https');
-		https.get({
-				host:'maps.googleapis.com',
-				path:path
-			},
-			function (res) {
-				var data = '';
-				res.on('data',
-					function (chunk) {
-						data += chunk;
-					});
-				res.on('end',
-					function () {
-						var results = JSON.parse(data);
-						server._respondwrap(request, response, results);
-					});
-			}).on('error',
-			function (e) {
-				console.error(e);
-			});
+
+		utils.getJSON('https://maps.googleapis.com/maps/api/place/search/json', {
+			keyword:  args.q,
+			location: args.lt + "," + args.lg,
+			key:      this._config._conf.munitia_google_maps_api_key,
+			sensor:   'false',
+			radius:   radius,
+			sort:     'relevance'
+		}, function(error, data) {
+			if (error) {
+				onError(502, 'Bad Gateway', error)
+			} else {
+				server._respondwrap(request, response, data);
+			}
+		});
+
+		return true;
+
 	},
+
+	search_flickr_imgs: function(request, response, args) {
+
+		var radius    = 10000;
+		var server    = this;
+		var missing   = this._validate_args(args, ['lt', 'lg', 'q']);
+
+		function onError(error, status, msg) {
+			return server._respond(request, response, {
+				msg:    msg,
+				error:  error,
+				status: status
+			});
+		}
+
+		if (missing.length > 0) {
+			return onError(403, 'Bad Request', missing + ' required');
+		}
+
+		utils.getJSON('http://api.flickr.com/services/rest', {
+			method:         'flickr.photos.search',
+			api_key:        this._config._conf.munitia_flickr_api_key,
+			text:           args.q,
+			safe_search:    1,             // 1 is "safe"
+			license:        '1,2,3,4,5,6', // creative commons varieties
+			content_type:   1,             // 1 is photos only
+			sort:           'relevance',
+			lat:            args.lt,
+			long:           args.lg,
+			format:         'json',
+			nojsoncallback: 1,
+			per_page:       20,
+			radius:         radius
+		}, function(error, data) {
+			if (error) {
+				onError(502, 'Bad Gateway', error)
+			} else {
+				server._respondwrap(request, response, data);
+			}
+		});
+
+		return true;
+
+	},
+
 	db_test:function (request, response, args) {
 		var server = this;
 		this._database.find({
-				collection:'test'
-			},
-			function (results) {
-				server._respondwrap(request, response, results);
-			});
+			collection: 'test'
+		}, function (results) {
+			server._respondwrap(request, response, results);
+		});
 	}
 };
 
