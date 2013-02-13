@@ -34,3 +34,8 @@ python import_trips.py      -p $PASS -h $HOST -f $DATA/trips.txt
 python lines_to_stops.py    $DATA/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS
 python push_next_stops.py   $DATA/routes.txt $DATA/trips.txt $DATA/stop_times.txt $HOST $PASS
 
+# And then do this in a mongo shell
+# db.stops.ensureIndex({loc:"2d"})
+#
+# db.questions.ensureIndex({loc:"2d"})
+#

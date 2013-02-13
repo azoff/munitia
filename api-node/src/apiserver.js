@@ -134,10 +134,13 @@ ApiServer.prototype = {
 			// TODO: Actually wire this up to a real users model!
 		});
 	},
+    /**
+     * @deprecated
+     */
 	login:function (request, response, args) {
 		this._respond(request, response, {
-			user_id:1,
-			nick:'tracy',
+			user_id:0,
+			nick:'Deb Recated',
 			avatar_img:'https://plus.google.com/104770262832706227353'
 		});
 	},
@@ -256,6 +259,8 @@ ApiServer.prototype = {
 		every_twenty_minutes = Math.floor(new Date().getTime() / 1200000);
 		this._database.update({
 				collection:'rounds',
+                // NOTE(tracy): Time quantam disabled for now (was causing mongodb lockups).  Only add the
+                // user to a round that is not-finished.
 				/* NOTE(tracy): remove time quantam'ing for testing purposes!!
 				 criteria: { stretch_id: args.stretch_id, loc: { $near : [lg, lt]}, finished: false, quantam: every_twenty_minutes},
 				 doc: { "$set": { stretch_id: args.stretch_id, loc: [lg, lt], finished: false, quantam: every_twenty_minutes },
@@ -329,6 +334,8 @@ ApiServer.prototype = {
 			return;
 		}
 		console.log('looking for stretch_id ' + args.stretch_id);
+        // NOTE(tracy): Time quantam matching turned off because it was causing mongodb lockup.  Just look for a round
+        // that isn't finished yet.
 		// NOTE(tracy): This is for testing.  Normally we could find multiple active rounds for a given stretch_id, but
 		// adding the every_twenty_minutes constraint should only return a recently created round (better for testing).
 		var every_twenty_minutes = Math.floor(new Date().getTime() / 1200000);
@@ -395,33 +402,18 @@ ApiServer.prototype = {
 				}
 			});
 	},
+    // TODO(Tracy): Only add the round_score to the stretch if in top N.
 	add_round_score_to_stretch:function (request, response, args) {
 		var server = this;
-		if (args.stretch_id === undefined) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:'stretch_id is required'
-			});
-			return;
-		}
-		if (args.round_id === undefined) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:'round_id is required'
-			});
-			return;
-		}
-		if (args.score === undefined) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:'score is required'
-			});
-			return;
-		}
-		var stretch_id = args.stretch_id;
+        if ((missing_arg = this._validate_args(args, ['stretch_id', 'round_id', 'score'])) != 0) {
+            this._respond(request, response, {
+                error:'Bad Request',
+                status:403,
+                msg:missing_arg + ' required'
+            });
+            return;
+        }
+ 		var stretch_id = args.stretch_id;
 		var new_round_score = {
 			round_id:args.round_id,
 			score:args.score
@@ -447,24 +439,14 @@ ApiServer.prototype = {
 	},
 	find_stops_near:function (request, response, args) {
 		var server = this;
-		if (args.lg === undefined) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:'lg is required'
-			});
-			return;
-		}
-		if (args.lt === undefined) {
-			this._respond(request, response, {
-				error:'Bad Request',
-				status:403,
-				msg:'lt is required'
-			});
-			return;
-		}
-		var lg = parseFloat(args.lg, 10);
-		var lt = parseFloat(args.lt, 10);
+        if ((missing_arg = this._validate_args(args, ['lt', 'lg'])) != 0) {
+            this._respond(request, response, {
+                error:'Bad Request',
+                status:403,
+                msg:missing_arg + ' required'
+            });
+            return;
+        }
 		var limit = 5;
 		if ("limit" in args) {
 			limit = args.limit;
@@ -486,7 +468,7 @@ ApiServer.prototype = {
 	},
 	gps_log:function (request, response, args) {
 		var server = this;
-		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'user_id'])) != '') {
+		if ((missing_arg = this._validate_args(args, ['lt', 'lg', 'user_id', 'stretch_id'])) != 0) {
 			this._respond(request, response, {
 				msg:    missing_arg + ' required',
 				error: 'Bad Request',
@@ -497,7 +479,8 @@ ApiServer.prototype = {
 		var gps_point = {
 			t:parseInt("" + (new Date().getTime() / 1000)),
 			loc:[parseFloat(args.lg, 10), parseFloat(args.lt)],
-			user_id:args.user_id
+			user_id:args.user_id,
+            stretch_id:args.stretch_id
 		};
 		this._add_optional_properties(args, gps_point, ['accuracy', 'altitude', 'altitudeAccuracy', 'heading', 'speed', 'name']);
 		server._database.insert({
