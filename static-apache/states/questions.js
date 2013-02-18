@@ -44,9 +44,12 @@
 			return;
 		}
 
-		state.setHeader('Question ' + index + ' of ' + size);
+	        // NOTE(tracy): Screen real estate is too precious for the question number
+	        // also, question # has no impact on the game.
+	        // state.setHeader('Question ' + index + ' of ' + size);
 		// set question prompt
-		state.prompt.html(question.question);
+	        // state.prompt.html(question.question);
+	        state.setHeader(question.question);
 		// set image, if any
 		if (question.img_url) {
 			state.img.addClass('test').css({

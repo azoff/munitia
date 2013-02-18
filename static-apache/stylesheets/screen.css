@@ -38,11 +38,16 @@ body {
 	margin: 0.6em 0 0;
 }
 
+/* Don't crop list button text with ellipsis, can't differentiate inbound/outbound */
+.ui-li .ui-btn-text a.ui-link-inherit {
+  white-space: normal;
+}
+
 .question { text-align: center; }
 .question h3 { margin: 0 0 1em; }
 .question .img-container { display: none; }
 .question .active.img-container { display: block; }
-.question .img { margin: 10px auto; width: 90%; height: 240px; background: none center center no-repeat; }
+.question .img { margin: 10px auto; width: 90%; height: 180px; background: none center center no-repeat; }
 .question [data-role=listview] {
 	margin: 1em 0;
 }
