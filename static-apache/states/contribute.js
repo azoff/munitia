@@ -64,7 +64,7 @@
 						enableSearch(input, true);
 					});
 				});
-			}, 750));
+			}, 2000));
 		} else {
 			results.removeClass('in').empty();
 		}

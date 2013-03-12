@@ -94,7 +94,7 @@
 		state.setHeader('Loading Question...');
 		state.next.addClass('hidden');
         // NOTE(tracy): If we hit the end of the questions, reload questions.
-		if (model.questions && (model.question < model.questions.length - 1)) {
+		if (model.questions && (model.question < model.questions.length)) {
 			renderNextQuestion();
 		} else {
 			session.getPosition().then(findQuestions);

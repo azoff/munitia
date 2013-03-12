@@ -458,7 +458,7 @@ ApiServer.prototype = {
 				},
 				query:{
 					loc:{
-						$near:[lg, lt]
+						$near:[args.lg, args.lt]
 					}
 				}
 			},
