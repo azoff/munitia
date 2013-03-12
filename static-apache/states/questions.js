@@ -33,23 +33,17 @@
 	function renderNextQuestion() {
 
 		var question = model.questions[model.question];
+		var answers = [];
 		var size = model.questions.length;
 		var index = model.question + 1;
-		var answers = [];
 
 		state.answers.empty();
 
-		if (!question) {
-			state.renderer.reject('No more questions :(');
-			return;
-		}
+		// NOTE(tracy): Screen real estate is too precious for the question number
+		// also, question # has no impact on the game.
+		state.setHeader('Question ' + index + ' of ' + size);
+		state.prompt.html(question.question);
 
-	        // NOTE(tracy): Screen real estate is too precious for the question number
-	        // also, question # has no impact on the game.
-	        // state.setHeader('Question ' + index + ' of ' + size);
-		// set question prompt
-	        // state.prompt.html(question.question);
-	        state.setHeader(question.question);
 		// set image, if any
 		if (question.img_url) {
 			state.img.addClass('test').css({
@@ -107,8 +101,12 @@
 		return state.renderer.promise();
 	}
 
+	function leave() {
+		model.questions = undefined;
+	}
+
 	state = states.defineState('questions', {
-		init: init, update: update
+		init: init, update: update, leave: leave
 	});
 
 })(munitia.game.model, munitia.controller, munitia.api, munitia.states, munitia.session, jQuery);

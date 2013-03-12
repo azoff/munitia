@@ -47,6 +47,7 @@
 			definition = definition || {};
 			definition.init = definition.init ? definition.init : module.noop;
 			definition.update = definition.update ? definition.update : module.noop;
+			definition.cleanup = definition.cleanup ? definition.cleanup : module.noop;
 			global.setTimeout(function(){
 				state.definition.resolve(definition);
 			}, 1);
@@ -119,6 +120,23 @@
 						executor.resolve();
 					}
 				});
+			});
+			return executor.promise();
+		},
+
+		leave: function() {
+			var executor = $.Deferred(), state = this;
+			state.definition.then(function(definition){
+				var cleanup = definition.cleanup.call(state);
+				if (cleanup) {
+					if (cleanup.fail) {
+						cleanup.fail(state.notifier);
+					} if (cleanup.always) {
+						cleanup.always(executor.resolve);
+					}
+				} else {
+					executor.resolve();
+				}
 			});
 			return executor.promise();
 		}

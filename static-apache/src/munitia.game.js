@@ -11,7 +11,7 @@
 
 		// picks the correct start state
 		start: function() {
-			var hash = module.model.lastState || $.trim(global.location.hash);
+			var hash = module.model.lastHash || $.trim(global.location.hash);
 			// if session is found...
 			if (session.hasUser()) {
 				// let the user choose his start state, unless
@@ -23,14 +23,22 @@
 
 			// always force login if no session is found
 			} else {
-				module.model.lastState = hash;
+				module.model.lastHash = hash;
 				mobile.changePage('login');
 			}
 		},
 
 		// handles state change processing
 		changeState: function(state, page) {
-			return states.getState(state).execute(page);
+			function transition() {
+				module.lastState = states.getState(state);
+				return module.lastState.execute(page);
+			}
+			if (module.lastState) {
+				return module.lastState.leave().then(transition);
+			} else {
+				return transition();
+			}
 		}
 
 	};
